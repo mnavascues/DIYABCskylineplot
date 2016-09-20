@@ -7,10 +7,10 @@
 
 
 # load parameters reference table
-load( file = paste(project,"/",project,".params.RData",sep="") )
-load( file = paste(project,"/",project,".mutparams.RData",sep="") )
+load( file = paste0("results/",project,"/",project,".params.RData") )
+load( file = paste0("results/",project,"/",project,".mutparams.RData") )
 # load statistics for reference table
-load( file = paste(project,"/",project,".sumstats.RData",sep="") )
+load( file = paste0("results/",project,"/",project,".sumstats.RData") )
 
 G <- paste("G",1:num_of_points,sep="")
 Tmax <- prior_TAU_max    
@@ -35,12 +35,12 @@ for (gen in 1:length(generations)){
     }
   }
 }
-save(newparams,file = paste(project,"/",project,"_newparams.RData",sep=""))
+save(newparams,file = paste0("results/",project,"/",project,"_newparams.RData"))
 
 
 
 if (simulated_target_data) {
-  mkdir_command <- paste0("mkdir ",project,"/Results/Error")
+  mkdir_command <- paste0("mkdir results/",project,"/Results/Error")
   if(.Platform$OS.type == "unix") system( mkdir_command )
   
   for (pGSMvalue in seq_along(true_gsm)){
@@ -49,7 +49,7 @@ if (simulated_target_data) {
 
     for (scenario in scenarios_number) {
       
-      source(paste("Scenari/",scenarios[scenario],".R",sep=""))
+      source(paste0("src/Scenari/",scenarios[scenario],".R"))
       
       
       true_demo <- demography(generations/true_mutrate)*true_mutrate*2
@@ -66,7 +66,7 @@ if (simulated_target_data) {
       ratioNe_hat   <- array(NA,dim=number_of_replicates)
       ratioNe_95HPD <- matrix(NA, nrow = number_of_replicates , ncol = 2 )
       
-      target <- read.table(file = paste("Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats",sep=""), header = T)
+      target <- read.table(file = paste0("results/Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats"), header = T)
       target <- target[sumstats_header]
       
       constant_model <- params$PERIODS
@@ -149,7 +149,7 @@ if (simulated_target_data) {
       rel_mae  <- mae/true_demo
       sky_error <- list(bias=bias,relative_bias=rel_bias,mean_absolute_error=mae,relative_mean_absolute_error=rel_mae)
       
-      file_name <- paste(project,"/Results/Error/",scenarios[scenario],"_",true_gsm[pGSMvalue],"_ABCsky_error.",g_out,sep="")
+      file_name <- paste0("results/",project,"/Results/Error/",scenarios[scenario],"_",true_gsm[pGSMvalue],"_ABCsky_error.",g_out)
       if (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300)
       if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)
       if (g_out=="pdf") pdf(file    =file_name, width=11.7, height=8.3)
@@ -182,7 +182,7 @@ if (simulated_target_data) {
            pGSM_95HPD,
            ratioNe_hat,
            ratioNe_95HPD,
-           file=paste0(project,"/Results/",scenarios[scenario],"_",true_gsm[pGSMvalue],"_results.RData"))
+           file=paste0("results/",project,"/Results/",scenarios[scenario],"_",true_gsm[pGSMvalue],"_results.RData"))
     }  
   }
 
@@ -193,7 +193,7 @@ if (simulated_target_data) {
     
   # plot prior skyline
     
-  file_name <- paste(project,"/",project,"_ABCsky_prior.",g_out,sep="")
+  file_name <- paste0("results/",project,"/",project,"_ABCsky_prior.",g_out)
   if (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300) 
   if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)                        
   if (g_out=="pdf") pdf(file    =file_name, width=11.7, height=8.3)
@@ -241,7 +241,7 @@ if (simulated_target_data) {
   dev.off ( which=dev.cur() )
   
   # load observed stats
-  target <- read.table(file = paste0(project,"/target.sumstats"), header = T)
+  target <- read.table(file = paste0("results/",project,"/target.sumstats"), header = T)
   target <- target[sumstats_header]
   abc_target <- target[sumstats_header]
 
@@ -270,7 +270,7 @@ if (simulated_target_data) {
       
       
   # plot skyline
-  file_name <- paste0(project,"/",project,"_ABCsky_posterior.",g_out)
+  file_name <- paste0("results/",project,"/",project,"_ABCsky_posterior.",g_out)
   if (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300)
   if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)
   if (g_out=="pdf") pdf(file    =file_name, width=11.7, height=8.3)
@@ -301,7 +301,7 @@ if (simulated_target_data) {
 
   print("Skyline plot done")
   
-  #Sky_txt_file<-paste0(project,"/",project,"_SkylinePlot.txt")
+  #Sky_txt_file<-paste0("results/",project,"/",project,"_SkylinePlot.txt")
   #write( c("time","median","upper","lower"), file=Sky_txt_file, ncolumns=4)
   #write.table( cbind(generations,abcresult[3,],abcresult[6,],abcresult[2,]), file=Sky_txt_file,  col.names=F, row.names=F, append=T)
 
@@ -314,7 +314,7 @@ if (simulated_target_data) {
   constant_model[constant_model==1]           <- "Constant"
   constant_model[constant_model!="Constant"]  <- "Variable"
   
-  #test_constant_model_txt_file   <- paste0(project,"/",project,"_ABCsky_test_constant_model.txt")
+  #test_constant_model_txt_file   <- paste0("results/",project,"/",project,"_ABCsky_test_constant_model.txt")
   #write( c("Constant","Variable"),
   #       ncolumns = 2,
   #       file = test_constant_model_txt_file)
@@ -353,7 +353,7 @@ if (simulated_target_data) {
     ratioNe_hat   <- summary(abcresult,print=F)[3]  
     ratioNe_95HPD <- c(summary(abcresult,print=F)[2],summary(abcresult,print=F)[6])
     # plot prior and posterior ratioNe
-    file_name <- paste0(project,"/",project,"_ratioNe.",g_out)
+    file_name <- paste0("results/",project,"/",project,"_ratioNe.",g_out)
     if (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300)
     if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)
     if (g_out=="pdf") pdf(file    =file_name, width=11.7, height=8.3)
@@ -396,7 +396,7 @@ if (simulated_target_data) {
     pGSM_hat   <- summary(abcresult,print=F)[3]  
     pGSM_95HPD <- c(summary(abcresult,print=F)[2],summary(abcresult,print=F)[6])
     # plot prior and posterior pGSM
-    file_name <- paste0(project,"/",project,"_pGSM.",g_out)
+    file_name <- paste0("results/",project,"/",project,"_pGSM.",g_out)
     if (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300)
     if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)
     if (g_out=="pdf") pdf(file    =file_name, width=11.7, height=8.3)
@@ -436,7 +436,7 @@ if (simulated_target_data) {
     rateSNI_hat   <- summary(abcresult,print=F)[3]  
     rateSNI_95HPD <- c(summary(abcresult,print=F)[2],summary(abcresult,print=F)[6])
     # plot prior and posterior rateSNI
-    file_name <- paste0(project,"/",project,"_rateSNI.",g_out)
+    file_name <- paste0("results/",project,"/",project,"_rateSNI.",g_out)
     if (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300)
     if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)
     if (g_out=="pdf") pdf(file    =file_name, width=11.7, height=8.3)
@@ -469,7 +469,7 @@ if (simulated_target_data) {
        ratioNe_95HPD,
        rateSNI_hat,
        rateSNI_95HPD,
-       file=paste0(project,"/",project,"_results.RData"))
+       file=paste0("results/",project,"/",project,"_results.RData"))
 }
     
 
@@ -490,5 +490,5 @@ rm(abc_target,
    lower_than_TAU1)
 
 # save all results from step 3
-save.image( file=paste0(project,"/",project,"_step3.RData") ) 
+save.image( file=paste0("results/",project,"/",project,"_step3.RData") ) 
 
