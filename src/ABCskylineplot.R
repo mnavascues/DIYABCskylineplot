@@ -168,10 +168,10 @@ source(file="src/ABCskylineplot.step0.R", echo = T, print.eval = T)
 source(file="src/ABCskylineplot.step0.5.R", echo = T, print.eval = T)
 
 # 1. SAMPLE MODEL (NUMBER OF PERIODS) FROM PRIOR & RUN SIMULATIONS (with DIYABC)
-source(file="ABCskylineplot.step1.R", echo = T, print.eval = T)
+source(file="src/ABCskylineplot.step1.R", echo = T, print.eval = T)
       
 # 2. CALCULATE SUMMARY STATISTICS FOR TARGET DATA
-source(file="ABCskylineplot.step2.R", echo = T, print.eval = T)
+source(file="src/ABCskylineplot.step2.R", echo = T, print.eval = T)
      
 # 2.5 PERFORM PCA ON SUMMARY STATISTICS
 source(file="ABCskylineplot.step2.5.R", echo = T, print.eval = T)

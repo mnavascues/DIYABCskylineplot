@@ -25,9 +25,9 @@ for (period in min_num_of_periods:max_num_of_periods){
   # genepop file (original data file)
   ############################################################  
   if (simulated_target_data==F) {
-    copy_genepop_command <- paste("cp ",inputfile," ",project,"/",period,"period/",inputfile,sep="")
+    copy_genepop_command <- paste0("cp ",inputfile," results/",project,"/",period,"period/",inputfile)
   }else{
-    copy_genepop_command <- paste("cp ","Simulations/P",true_gsm[1],"/Scenario",scenario,"/Scenario",scenario,"_1.gen ",project,"/",period,"period/",inputfile,sep="")
+    copy_genepop_command <- paste0("cp ","results/Simulations/P",true_gsm[1],"/Scenario",scenario,"/Scenario",scenario,"_1.gen results/",project,"/",period,"period/",inputfile)
   }
   if(.Platform$OS.type == "unix") {
     system( copy_genepop_command )
@@ -39,7 +39,7 @@ for (period in min_num_of_periods:max_num_of_periods){
   
   
   #RNGs check
-  diyabc_command <- paste(DIYABC_exe_name," -z ",directory,"/",project,"/",period,"period/RNG_state_0000.bin > ",directory,"/",project,"/",period,"period/check_RNGs.log",sep="")
+  diyabc_command <- paste0(DIYABC_exe_name," -z ",directory,"/results/",project,"/",period,"period/RNG_state_0000.bin > ",directory,"/results/",project,"/",period,"period/check_RNGs.log")
   if(!run_in_cluster) {
     diyabc_command <- paste("./",diyabc_command,sep="")
     system( diyabc_command )
@@ -49,7 +49,7 @@ for (period in min_num_of_periods:max_num_of_periods){
   
   
   #run simulations
-  diyabc_command <- paste(DIYABC_exe_name," -p ",directory,"/",project,"/",period,"period/ -r ",num_of_sims_per_period[period]," -g ",batch_size," -m -t ",num_of_threads," > ",directory,"/",project,"/",period,"period/run_sims.log",sep="")
+  diyabc_command <- paste0(DIYABC_exe_name," -p ",directory,"/results/",project,"/",period,"period/ -r ",num_of_sims_per_period[period]," -g ",batch_size," -m -t ",num_of_threads," > ",directory,"/results/",project,"/",period,"period/run_sims.log")
   if(!run_in_cluster) {
     diyabc_command <- paste("./",diyabc_command,sep="")
     system( diyabc_command )
@@ -58,7 +58,7 @@ for (period in min_num_of_periods:max_num_of_periods){
   }
   
   #translating a reftable.bin in reftable.txt
-  diyabc_command <- paste(DIYABC_exe_name," -p ",directory,"/",project,"/",period,"period/ -x > ",directory,"/",project,"/",period,"period/bin2txt.log",sep="")
+  diyabc_command <- paste(DIYABC_exe_name," -p ",directory,"/results/",project,"/",period,"period/ -x > ",directory,"/results/",project,"/",period,"period/bin2txt.log",sep="")
   if(!run_in_cluster) {
     diyabc_command <- paste("./",diyabc_command,sep="")
     system( diyabc_command )
@@ -71,7 +71,7 @@ sumstats_header <- c("NAL_1_1","HET_1_1","VAR_1_1","MGW_1_1")
 
 for (period in min_num_of_periods:max_num_of_periods){
 
-  temp_file_name <- paste(directory,"/",project,"/",period,"period/reftable.txt",sep="")
+  temp_file_name <- paste(directory,"/results/",project,"/",period,"period/reftable.txt",sep="")
   sims_in_reftable <- scan(temp_file_name,n=1)
   lines_to_skip <- which(readLines(temp_file_name)=="4 summary statistics")
   reftable <- read.table(temp_file_name,skip=lines_to_skip,nrows =sims_in_reftable)
@@ -171,17 +171,17 @@ stats      <- stats[sims2keep,]
 params     <- params[sims2keep,]
 mut_params <- as.matrix(mut_params[sims2keep,])
 
-save(stats, file = paste(project,"/",project,".sumstats.RData",sep="") )
+save(stats, file = paste0("results/",project,"/",project,".sumstats.RData") )
 rm(stats)
 
-save(params, file = paste(project,"/",project,".params.RData",sep="") )
+save(params, file = paste0("results/",project,"/",project,".params.RData") )
 rm(params)
 
 dimnames(mut_params) <- list(NULL,mut_params_header)
-save(mut_params, file = paste(project,"/",project,".mutparams.RData",sep="") )
+save(mut_params, file = paste0("results/",project,"/",project,".mutparams.RData") )
 rm(mut_params)
 
 
 # save all results from step 1
-save.image( file=paste(project,"/",project,"_step1.RData",sep="") ) 
+save.image( file=paste0("results/",project,"/",project,"_step1.RData" ) ) 
 
