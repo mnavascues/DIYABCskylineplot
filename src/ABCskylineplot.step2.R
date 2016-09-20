@@ -7,13 +7,13 @@
 
 
 # set name of DIYABC file of target data
-diyabc_statobs <- paste(project,"/",max_num_of_periods,"period/statobs.txt",sep="")
+diyabc_statobs <- paste0("results/",project,"/",max_num_of_periods,"period/statobs.txt")
 
 if (!simulated_target_data){
       cat(paste("Rading summary statistics from target data\n"))
   
       # summary statistics output file
-      sumstats_file <- paste(project,"/target.sumstats",sep="")
+      sumstats_file <- paste0("results/",project,"/target.sumstats")
         
       sumstats <- scan( diyabc_statobs,skip=2)
       
@@ -34,7 +34,7 @@ if (!simulated_target_data){
       cat("\nCalculating summary statistics from",scenarios[scenario],"\n")
       
       # summary statistics output file
-      sumstats_file <- paste("Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats",sep="")
+      sumstats_file <- paste("results/Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats",sep="")
       
       sumstats_file_exist <- file.exists(sumstats_file)
       
@@ -43,7 +43,7 @@ if (!simulated_target_data){
         for (rep in 1:number_of_replicates){
           setTxtProgressBar(pb,rep)
           
-          copy_genepop_command <- paste("cp ","Simulations/",pGSMfolder,"/Scenario",scenario,"/Scenario",scenario,"_",rep,".gen ",project,"/",max_num_of_periods,"period/",inputfile,sep="")
+          copy_genepop_command <- paste0("cp ","results/Simulations/",pGSMfolder,"/Scenario",scenario,"/Scenario",scenario,"_",rep,".gen results/",project,"/",max_num_of_periods,"period/",inputfile)
           if(.Platform$OS.type == "unix") {
             system( copy_genepop_command )
           }else{
@@ -51,7 +51,7 @@ if (!simulated_target_data){
           }  
           
           #run 1 simulation in DIYABC to get sumstats from simulated target data
-          diyabc_command <- paste(DIYABC_exe_name," -p ",directory,"/",project,"/",max_num_of_periods,"period/ -r 1 -g 1 -m -t 1 > ",directory,"/",project,"/",max_num_of_periods,"period/run_sims4target_data.log",sep="")
+          diyabc_command <- paste0(DIYABC_exe_name," -p ",directory,"/results/",project,"/",max_num_of_periods,"period/ -r 1 -g 1 -m -t 1 > ",directory,"/results/",project,"/",max_num_of_periods,"period/run_sims4target_data.log")
           if(!run_in_cluster) {
             diyabc_command <- paste("./",diyabc_command,sep="")
             system( diyabc_command )
@@ -85,4 +85,4 @@ if (!simulated_target_data){
 
 
 # save all results from step 2
-save.image( file=paste(project,"/",project,"_step2.RData",sep="") ) 
+save.image( file=paste0("results/",project,"/",project,"_step2.RData" ) ) 
