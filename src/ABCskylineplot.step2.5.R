@@ -5,23 +5,23 @@
 ################################################################################
 
 # load statistics for reference table
-load( file = paste(project,"/",project,".sumstats.RData",sep="") )
+load( file = paste("results/",project,"/",project,".sumstats.RData",sep="") )
 
 PCA_stats  <- princomp(stats[,sumstats_header])
 
 
 # load observed stats
 if (simulated_target_data){
-  mkdir_command <- paste0("mkdir ",project,"/Results")
+  mkdir_command <- paste0("mkdir results/",project,"/Results")
   if(.Platform$OS.type == "unix") system( mkdir_command )
-  mkdir_command <- paste0("mkdir ",project,"/Results/PCA")
+  mkdir_command <- paste0("mkdir results/",project,"/Results/PCA")
   if(.Platform$OS.type == "unix") system( mkdir_command )
 
   for (pGSMvalue in seq_along(true_gsm)){
     
     pGSMfolder <- paste0("P", true_gsm[pGSMvalue])
     for (scenario in scenarios_number) {
-      target <- read.table(file = paste("Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats",sep=""), header = T)
+      target <- read.table(file = paste0("results/Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats"), header = T)
       main_title <- paste("PCA on summary statistics for scenario",scenario)
       
       PCA_target <- predict(PCA_stats, target[sumstats_header])
@@ -29,14 +29,14 @@ if (simulated_target_data){
       if (maxPCA>length(sumstats_header)) maxPCA <- length(sumstats_header)
       
       if (g_out=="pdf"){
-        file_name <- paste(project,"/Results/PCA/",scenarios[scenario],"_",true_gsm[pGSMvalue],"_PCA.pdf",sep="")
+        file_name <- paste0("results/",project,"/Results/PCA/",scenarios[scenario],"_",true_gsm[pGSMvalue],"_PCA.pdf")
         pdf(file=file_name, width=11.7, height=8.3)
       }
       
       for (pci in 1:(maxPCA-1)){
         for (pcj in (pci+1):maxPCA){
           if (!g_out=="pdf"){
-            file_name <- paste(project,"/Results/PCA/",scenarios[scenario],"_",true_gsm[pGSMvalue],"_PCA_",pci,"_",pcj,".",g_out,sep="")
+            file_name <- paste0("results/",project,"/Results/PCA/",scenarios[scenario],"_",true_gsm[pGSMvalue],"_PCA_",pci,"_",pcj,".",g_out)
           }
           if      (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300)
           else if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)
@@ -55,7 +55,7 @@ if (simulated_target_data){
     
   }  
 }else{
-  target <- read.table(file = paste0(project,"/target.sumstats"), header = T)
+  target <- read.table(file = paste0("results/",project,"/target.sumstats"), header = T)
   main_title <- paste("PCA on summary statistics for project",project)
 
   PCA_target <- predict(PCA_stats, target[sumstats_header])
@@ -63,13 +63,13 @@ if (simulated_target_data){
   if (maxPCA>length(sumstats_header)) maxPCA <- length(sumstats_header)
   
   if (g_out=="pdf"){
-    file_name <- paste(project,"/",project,"_PCA.pdf",sep="")
+    file_name <- paste0("results/",project,"/",project,"_PCA.pdf")
     pdf(file=file_name, width=11.7, height=8.3)
   }
   
   for (pci in 1:(maxPCA-1)){
     for (pcj in (pci+1):maxPCA){
-      if     (!g_out=="pdf") file_name <- paste(project,"/",project,"_PCA_",pci,"_",pcj,".",g_out,sep="")
+      if     (!g_out=="pdf") file_name <- paste0("results/",project,"/",project,"_PCA_",pci,"_",pcj,".",g_out)
       if      (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300)
       else if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)
   
@@ -87,5 +87,5 @@ if (simulated_target_data){
 rm(PCA_target,PCA_stats,stats,target)
 
 # save all results from step 2.5
-save.image( file=paste(project,"/",project,"_step2.5.RData",sep="") ) 
+save.image( file=paste0("results/",project,"/",project,"_step2.5.RData") ) 
 
