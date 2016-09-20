@@ -8,13 +8,13 @@ options(scipen=99)
 set.seed(seed)
 DIYABC_seed <- round(runif(max_num_of_periods,1,9999))
 
-if (project=="Scenari" | project=="Simulations"){
-  project <- paste0(project,"XYZ")
+if (project=="BEAST" | project=="Simulations"){
+  project <- paste0(project,"_renamed")
   warning(paste0("project name invalid, changed to ",project))
 }
 
-if (!file.exists(project)){
-  mkdir_command <- paste("mkdir ",project,sep="")
+if (!file.exists(paste0("results/",project))){
+  mkdir_command <- paste0("mkdir results/",project)
   if(.Platform$OS.type == "unix") system( mkdir_command )  
 }else{
   warning("A project (folder) with the same name exists and will be overwritten")
@@ -38,7 +38,7 @@ if (!simulated_target_data){
   for (scenario in scenarios_number){
     scenario_name <- scenarios[scenario]
     cat(paste("Creating .par files for scenario:",scenario_name," (listed below)\n"))
-    demographic_model <- readLines(paste("Scenari/",scenario_name,".simcoal",sep=""))
+    demographic_model <- readLines(paste("src/Scenari/",scenario_name,".simcoal",sep=""))
 
     for (pGSMvalue in seq_along(true_gsm)){
       
@@ -102,7 +102,7 @@ for (period in min_num_of_periods:max_num_of_periods){
   
   # one directory for each model
   ##############################################################
-  mkdir_command <- paste("mkdir ",project,"/",period,"period",sep="")
+  mkdir_command <- paste0("mkdir results/",project,"/",period,"period")
   if(.Platform$OS.type == "unix") {
     system( mkdir_command )
   }
@@ -110,7 +110,7 @@ for (period in min_num_of_periods:max_num_of_periods){
   
   # header file
   ############################################################
-  header_file_name <- paste(project,"/",period,"period/header.txt",sep="")
+  header_file_name <- paste0("results/",project,"/",period,"period/header.txt")
   
   # 1st line
   write(inputfile, file=header_file_name) 
@@ -218,7 +218,7 @@ for (period in min_num_of_periods:max_num_of_periods){
   write(header, file=header_file_name, append=T)
   
   #initialization of RNGs
-  diyabc_command <- paste(DIYABC_exe_name," -p ",directory,"/",project,"/",period,"period/ -n f:t:",num_of_threads,"s:",DIYABC_seed[period]," > ",directory,"/",project,"/",period,"period/init_RNGs.log",sep="")
+  diyabc_command <- paste(DIYABC_exe_name," -p ",directory,"/results/",project,"/",period,"period/ -n f:t:",num_of_threads,"s:",DIYABC_seed[period]," > ",directory,"/results/",project,"/",period,"period/init_RNGs.log",sep="")
   if(!run_in_cluster) {
     diyabc_command <- paste("./",diyabc_command,sep="")
     system( diyabc_command )
@@ -289,4 +289,4 @@ beta_prime <- function(Na,V,log_beta=F){
 
 
 # save all results from step 0
-save.image( file=paste(project,"/",project,"_step0.RData",sep="") ) 
+save.image( file=paste0("results/",project,"/",project,"_step0.RData") ) 

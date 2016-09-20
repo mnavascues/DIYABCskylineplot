@@ -3,3 +3,6 @@ bin/fastsimcoal
 seed.txt
 .Rproj.user
 results/*
+*.par
+fastsimcoal*.log
+Scenario*

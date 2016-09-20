@@ -162,10 +162,10 @@ parseCommandArgs()
 setwd(directory) 
 
 # 0. Additionnal operations related to settings
-source(file="ABCskylineplot.step0.R", echo = T, print.eval = T)
+source(file="src/ABCskylineplot.step0.R", echo = T, print.eval = T)
 
 # 0.5 PERFORM SIMULATIONS TO ACT AS TARGET DATA
-source(file="ABCskylineplot.step0.5.R", echo = T, print.eval = T)
+source(file="src/ABCskylineplot.step0.5.R", echo = T, print.eval = T)
 
 # 1. SAMPLE MODEL (NUMBER OF PERIODS) FROM PRIOR & RUN SIMULATIONS (with DIYABC)
 source(file="ABCskylineplot.step1.R", echo = T, print.eval = T)

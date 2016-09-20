@@ -5,17 +5,17 @@
 ################################################################################
 
 # If simulations have already been performed they are in folder "Simulations"
-sims_exist <- file.exists("Simulations")
+sims_exist <- file.exists("results/Simulations")
 
 if (simulated_target_data & !sims_exist){
-  if(.Platform$OS.type == "unix") system( "mkdir Simulations" )  
+  if(.Platform$OS.type == "unix") system( "mkdir results/Simulations" )  
   
   random_sim <- array(NA,number_of_scenarios)
   
   for (pGSMvalue in seq_along(true_gsm)){
     
     pGSMfolder <- paste0("P", true_gsm[pGSMvalue])
-    mkdir_command <- paste("mkdir Simulations/",pGSMfolder,sep="")
+    mkdir_command <- paste("mkdir results/Simulations/",pGSMfolder,sep="")
     if(.Platform$OS.type == "unix") system( mkdir_command )  
     
     for (scenario in scenarios_number) {
@@ -25,13 +25,13 @@ if (simulated_target_data & !sims_exist){
       cat(paste("Simulation of target data for",scenario_name,"\n"))
       
       # generate seed.txt file for fastsimcoal
-      write(paste("fastsimcoal seed initialized with",as.integer(runif(1,1,1000000))) , file="seed.txt", append = F) 
+      write(paste("fastsimcoal seed initialized with",as.integer(runif(1,1,1000000))) , file="bin/seed.txt", append = F) 
       
       # name of par file 
       par_file <- paste0(scenario_name,"_",true_gsm[pGSMvalue],".par")
       
       # write fastsimcoal command
-      fastsimcoal_run <- paste( "fastsimcoal",
+      fastsimcoal_run <- paste( "bin/fastsimcoal",
                                 "-i", par_file,             # parameter file (.par)
                                 "-n", number_of_replicates) # number of simulations per combination of parameter values
       if (quiet)  fastsimcoal_run <- paste(fastsimcoal_run, "-q")    # run in quiet mode
@@ -50,7 +50,7 @@ if (simulated_target_data & !sims_exist){
       
       # one direcotory for each scenario
       ##############################################################
-      mkdir_command <- paste("mkdir Simulations/",pGSMfolder,"/Scenario",scenario,sep="")
+      mkdir_command <- paste("mkdir results/Simulations/",pGSMfolder,"/Scenario",scenario,sep="")
       if(.Platform$OS.type == "unix") {
         system( mkdir_command )
       }else{
@@ -61,7 +61,7 @@ if (simulated_target_data & !sims_exist){
       
       #create an input file to use with Beauti + BEAST
       if (do_BEAST_input){
-        BEAST_file_name <- paste0("Simulations/",pGSMfolder,"/Scenario",scenario,"/Scen",scenario,"_sim",random_sim[scenario],"_input4BEAUTi.txt")
+        BEAST_file_name <- paste0("results/Simulations/",pGSMfolder,"/Scenario",scenario,"/Scen",scenario,"_sim",random_sim[scenario],"_input4BEAUTi.txt")
         temp_file_name <- paste0(scenario_name,"_",true_gsm[pGSMvalue],"/",scenario_name,"_",true_gsm[pGSMvalue],"_1_",random_sim[scenario],".arp")
         
         lines_to_skip <- which(readLines(temp_file_name)=="\t\tSampleData= {")
@@ -84,7 +84,7 @@ if (simulated_target_data & !sims_exist){
       #convert arlequin format into genepop format
       for (replic in 1:number_of_replicates){
         temp_file_name <- paste0(scenario_name,"_",true_gsm[pGSMvalue],"/",scenario_name,"_",true_gsm[pGSMvalue],"_1_",replic,".arp")
-        out_file_name <- paste0("Simulations/",pGSMfolder,"/Scenario",scenario,"/Scenario",scenario,"_",replic,".gen")
+        out_file_name <- paste0("results/Simulations/",pGSMfolder,"/Scenario",scenario,"/Scenario",scenario,"_",replic,".gen")
 
 
                 
@@ -143,4 +143,5 @@ if (simulated_target_data & !sims_exist){
 
 
 # save all results from step 0.5
-save.image( file=paste(project,"/",project,"_step0.5.RData",sep="") ) 
+save.image( file=paste0("results/",project,"/",project,"_step0.5.RData") ) 
+
