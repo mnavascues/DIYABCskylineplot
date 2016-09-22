@@ -6,3 +6,5 @@ results/*
 *.par
 fastsimcoal*.log
 Scenario*
+src/RatioNe.sh
+RatioNe.sh
