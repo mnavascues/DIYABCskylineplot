@@ -116,7 +116,7 @@ if (simulated_target_data) {
                            tol     = proportion_of_sims_kept,
                            method  = "loclinear",
                            transf  = "log",
-                           hcorr   = T,
+                           hcorr   = F,
                            trace=T)
           ratioNe_hat[sim]    <- summary(abcresult,print=F)[3]  
           ratioNe_95HPD[sim,] <- c(summary(abcresult,print=F)[2],summary(abcresult,print=F)[6])
