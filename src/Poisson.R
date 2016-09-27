@@ -1,4 +1,4 @@
-bash_file <- "RatioNe.sh"
+bash_file <- "Poisson.sh"
 
 # write first line of BASH script
 write(x="#!/bin/bash",file=bash_file,ncolumns=1,append=F)
@@ -8,8 +8,8 @@ R_command <- paste(R_command,"num_of_sims             1000000")
 R_command <- paste(R_command,"proportion_of_sims_kept 0.01")
 R_command <- paste(R_command,"seed                    6132")
 R_command <- paste(R_command,"num_of_points           20")
-R_command <- paste(R_command,"prior_PERIODS          'constant'")
-R_command <- paste(R_command,"max_num_of_periods      2")
+R_command <- paste(R_command,"prior_PERIODS          'Poisson'")
+R_command <- paste(R_command,"max_num_of_periods      10")
 R_command <- paste(R_command,"prior_THETA            'LU'")
 R_command <- paste(R_command,"prior_THETA_min         1E-3")
 R_command <- paste(R_command,"prior_THETA_max         1E4")
@@ -18,7 +18,7 @@ R_command <- paste(R_command,"prior_TAU_max           10")
 R_command <- paste(R_command,"prior_GSM              'UN'")
 R_command <- paste(R_command,"prior_GSM_min           0.0")
 R_command <- paste(R_command,"prior_GSM_max           1.0")
-R_command <- paste(R_command,"project                'RatioNe'")
+R_command <- paste(R_command,"project                'Poisson'")
 R_command <- paste(R_command,"num_of_threads          12")
 R_command <- paste(R_command,"number_of_replicates    100")
 R_command <- paste(R_command,"sample_size             50")

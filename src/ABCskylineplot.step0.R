@@ -33,42 +33,43 @@ if (!simulated_target_data){
   
 }else{ # i.e. simulated_target_data=T
 
-  # creation of .par files for simulations
-  number_of_scenarios  <- length(scenarios) 
-  for (scenario in scenarios_number){
-    scenario_name <- scenarios[scenario]
-    cat(paste("Creating .par files for scenario:",scenario_name," (listed below)\n"))
-    demographic_model <- readLines(paste("src/Scenari/",scenario_name,".simcoal",sep=""))
-
-    for (pGSMvalue in seq_along(true_gsm)){
+  sims_exist <- file.exists("results/Simulations")
+  
+  if (!sims_exist){
+    # creation of .par files for simulations
+    number_of_scenarios  <- length(scenarios) 
+    for (scenario in scenarios_number){
+      scenario_name <- scenarios[scenario]
+      cat(paste("Creating .par files for scenario:",scenario_name," (listed below)\n"))
+      demographic_model <- readLines(paste("src/Scenari/",scenario_name,".simcoal",sep=""))
       
-      # name of par file 
-      par_file <- paste0(scenario_name,"_",true_gsm[pGSMvalue],".par")
-      
-      if (!file.exists(par_file)){
-        # send message on screen
-        cat(paste("Creating .par file:",par_file,"\n"))
+      for (pGSMvalue in seq_along(true_gsm)){
         
-        demographic_model[6] <- sample_size
+        # name of par file 
+        par_file <- paste0(scenario_name,"_",true_gsm[pGSMvalue],".par")
         
-        write(demographic_model,file=par_file,ncolumn=1)
-        
-        write("//Number of independent loci [chromosome]", file=par_file, append=T)
-        write(paste(num_of_loci,0), file=par_file, append=T)
-        write("//Number of linkage blocks per chormosome", file=par_file, append=T)
-        write(paste(1), file=par_file, append=T)
-        write(paste("////per Block: data type, num loci, rec. rate and mut rate + optional parameters"), file=par_file, append=T)
-        
-        write(paste( "MICROSAT 1 0 ",
-                     true_mutrate,
-                     " ",true_gsm[pGSMvalue],
-                     " 0",sep=""), file=par_file, append=T)
+        if (!file.exists(par_file)){
+          # send message on screen
+          cat(paste("Creating .par file:",par_file,"\n"))
+          
+          demographic_model[6] <- sample_size
+          
+          write(demographic_model,file=par_file,ncolumn=1)
+          
+          write("//Number of independent loci [chromosome]", file=par_file, append=T)
+          write(paste(num_of_loci,0), file=par_file, append=T)
+          write("//Number of linkage blocks per chormosome", file=par_file, append=T)
+          write(paste(1), file=par_file, append=T)
+          write(paste("////per Block: data type, num loci, rec. rate and mut rate + optional parameters"), file=par_file, append=T)
+          
+          write(paste( "MICROSAT 1 0 ",
+                       true_mutrate,
+                       " ",true_gsm[pGSMvalue],
+                       " 0",sep=""), file=par_file, append=T)
+        }
       }
-
-    }
-    
-   
-  }# end FOR scenarios
+    }# end FOR scenarios
+  }# end if (!sims_exist)
   
   data_sample_size   <- sample_size
   data_num_of_loci   <- num_of_loci

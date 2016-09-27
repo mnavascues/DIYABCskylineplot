@@ -27,7 +27,7 @@ for (period in min_num_of_periods:max_num_of_periods){
   if (simulated_target_data==F) {
     copy_genepop_command <- paste0("cp ",inputfile," results/",project,"/",period,"period/",inputfile)
   }else{
-    copy_genepop_command <- paste0("cp ","results/Simulations/P",true_gsm[1],"/Scenario",scenario,"/Scenario",scenario,"_1.gen results/",project,"/",period,"period/",inputfile)
+    copy_genepop_command <- paste0("cp ","results/Simulations/P",true_gsm[1],"/Scenario1/Scenario1_1.gen results/",project,"/",period,"period/",inputfile)
   }
   if(.Platform$OS.type == "unix") {
     system( copy_genepop_command )
