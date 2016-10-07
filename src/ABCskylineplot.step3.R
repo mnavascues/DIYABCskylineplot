@@ -100,7 +100,7 @@ if (simulated_target_data) {
                                  index   = constant_model,
                                  sumstat = stats[sumstats_header],
                                  tol     = proportion_of_sims_kept,
-                                 corr    = F,
+                                 corr    = T,
                                  method  = "mnlogistic",
                                  trace=F)
           test_constant_model_posterior[sim,] <- model_choice$pred
@@ -128,7 +128,7 @@ if (simulated_target_data) {
                            sumstat = stats[,sumstats_header],
                            tol     = proportion_of_sims_kept,
                            method  = "loclinear",
-                           hcorr   = T,
+                           hcorr   = F,
                            transf  = "logit",
                            logit.bounds = matrix(c(prior_GSM_min,prior_GSM_max),ncol=2),
                            trace=T)
@@ -327,7 +327,7 @@ if (simulated_target_data) {
                            index   = constant_model,
                            sumstat = stats[sumstats_header],
                            tol     = proportion_of_sims_kept,
-                           corr    = F,
+                           corr    = T,
                            method  = "mnlogistic",
                            trace=F)
     #write.table(t(model_choice$nmodels/sum(model_choice$nmodels)), col.names=F, file=test_constant_model_txt_file, row.names=F, append=T)
@@ -347,7 +347,7 @@ if (simulated_target_data) {
                      sumstat = stats[,sumstats_header],
                      tol     = proportion_of_sims_kept,
                      method  = "loclinear",
-                     hcorr   = T,
+                     hcorr   = F,
                      transf  = "log",
                      trace=T)
     ratioNe_hat   <- summary(abcresult,print=F)[3]  
@@ -388,7 +388,7 @@ if (simulated_target_data) {
                      sumstat = stats[,sumstats_header],
                      tol     = proportion_of_sims_kept,
                      method  = "loclinear",
-                     hcorr = T,
+                     hcorr = F,
                      transf  = "logit",
                      logit.bounds = matrix(c(prior_GSM_min,prior_GSM_max),ncol=2),
                      trace=T)
@@ -428,7 +428,7 @@ if (simulated_target_data) {
                      sumstat = stats[,sumstats_header],
                      tol     = proportion_of_sims_kept,
                      method  = "loclinear",
-                     hcorr = T,
+                     hcorr = F,
                      transf  = "logit",
                      logit.bounds = matrix(c(prior_SNI_min,prior_SNI_max),ncol=2),
                      trace=T)

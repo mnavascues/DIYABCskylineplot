@@ -24,7 +24,7 @@
 
 library(abc);library(adegenet);library(graphics);library(gplots);library(hexbin);library(batch);require(grid)
 
-# REQUIREMENTS for analysing pseudodata (simulated data):
+# REQUIREMENTS for analysing pseudo observed data (simulated data):
 
 # [ ] fastsimcoal: cmpg.unibe.ch/software/fastsimcoal/
 #     default location in bin folder
