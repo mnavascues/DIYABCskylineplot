@@ -30,20 +30,20 @@ if (!simulated_target_data){
   for (pGSMvalue in seq_along(true_gsm)){
     
     pGSMfolder <- paste0("P", true_gsm[pGSMvalue])
-    for (scenario in scenarios_number) {
+    for (scenario in seq_along(scenarios_number)){
       cat("\nCalculating summary statistics from",scenarios[scenario],"\n")
       
       # summary statistics output file
-      sumstats_file <- paste("results/Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats",sep="")
+      sumstats_file <- paste("results/",project,"/Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats",sep="")
       
       sumstats_file_exist <- file.exists(sumstats_file)
       
       if(!sumstats_file_exist){
         pb <- txtProgressBar(min=0, max=number_of_replicates, initial=0, char=".", style=3)
-        for (rep in 1:number_of_replicates){
-          setTxtProgressBar(pb,rep)
+        for (replic in 1:number_of_replicates){
+          setTxtProgressBar(pb,replic)
           
-          copy_genepop_command <- paste0("cp ","results/Simulations/",pGSMfolder,"/Scenario",scenario,"/Scenario",scenario,"_",rep,".gen results/",project,"/",max_num_of_periods,"period/",inputfile)
+          copy_genepop_command <- paste0("cp ","results/",project,"/Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],"_",replic,".gen results/",project,"/",max_num_of_periods,"period/",inputfile)
           if(.Platform$OS.type == "unix") {
             system( copy_genepop_command )
           }else{
@@ -66,7 +66,7 @@ if (!simulated_target_data){
                         beta_prime(sumstats[1],sumstats[3],log=T),
                         bottleneck(sumstats[1],sumstats[2],sample_size))
           
-          if (rep==1) write(sumstats_header, file=sumstats_file, ncolumns=length(sumstats_header), append=F)
+          if (replic==1) write(sumstats_header, file=sumstats_file, ncolumns=length(sumstats_header), append=F)
           write(sumstats,                    file=sumstats_file, ncolumns=length(sumstats_header), append=T)
           
           

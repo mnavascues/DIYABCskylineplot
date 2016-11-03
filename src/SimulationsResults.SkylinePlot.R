@@ -3,14 +3,98 @@
 
 # Miguel Navascués
 
-number_of_replicates<-1000
 
-model <- "P00"
-
+pgsm_values <- 0.22 #c(0.00,0.22,0.74)
 options(scipen = 999)
-scen_table <- read.table("Scenari/scenari.table.txt",header=T,row.names=1)
-mkdir_command <- paste0("mkdir ",model,"/Results")
+project <- "test"
+number_of_replicates <- 30
+scenarios_number <- c(8,20,26) #1:27
+scenarios <- paste("Scenario", scenarios_number, sep="")
+
+scen_table <- read.table("src/Scenari/scenari.table.txt",header=T,row.names=1)
+mkdir_command <- paste0("mkdir results/",project,"/Results/SkylinePlot")
 system( mkdir_command )
+
+
+for (pgsm in seq_along(pgsm_values)){
+  
+  pdf(file=paste0("results/",project,"/Results/SkylinePlot/AllSkylines_",pgsm_values[pgsm],".pdf"),width=4,height=8)
+  par(mfrow=c(3,1), mar=c(3,3,1,1), oma=c(3,3,0,0))
+  for (scen in seq_along(scenarios_number) ){
+    
+    load(paste0("results/",project,"/Results/",scenarios[scen],"_",pgsm_values[pgsm],"_results.RData"))
+
+    SKYtrue   <- true_demo
+    SKYmedian <- t(skylineplot$median) 
+    SKYlower  <- t(skylineplot$lower_95HPD)
+    SKYupper  <- t(skylineplot$upper_95HPD)
+    
+    label_x     <- "t (mutations/locus)"
+    label_y     <- expression("log"[10]*theta)
+    
+    plot( generations,
+          log10(SKYmedian[,1]),
+          type="n",
+          xlab="",
+          ylab="",
+          xlim=c(0,4),
+          ylim=c(-3,4), #ylim=c(-3,4),
+          cex.axis=1.2)
+    
+    for (i in 1:number_of_replicates){
+      lines(generations,log10(SKYlower[,i]),col=rgb(0.9,0.9,0.9,0.1))
+      lines(generations,log10(SKYupper[,i]),col=rgb(0.6,0.6,0.6,0.1))
+    }
+    for (i in 1:number_of_replicates){
+      lines(generations,log10(SKYmedian[,i]),col=rgb(0,0,0,0.1))
+    }
+    lines(generations,log10(SKYtrue),col="red")
+    
+    if (scenarios_number[scen]==26){
+      mtext(label_x, side=1, adj=0.5, cex=1, outer=TRUE)
+      mtext(label_y, side=2, adj=0.5, cex=1, outer=TRUE)
+    }
+    
+    
+    if(scenarios_number[scen]==8)  legend(x="topright",legend="contraction",cex=1.2,bty="n")
+    if(scenarios_number[scen]==20) legend(x="topright",legend="expansion",cex=1.2,bty="n")
+    if(scenarios_number[scen]==26) legend(x="topright",legend="constant size",cex=1.2,bty="n")
+    
+    
+  }
+  dev.off()
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # MAIN TEXT FIGURE
 pdf(file=paste0(model,"/Results/AllSkylines.pdf"),width=4,height=8)

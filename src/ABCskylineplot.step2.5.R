@@ -7,7 +7,11 @@
 # load statistics for reference table
 load( file = paste("results/",project,"/",project,".sumstats.RData",sep="") )
 
-PCA_stats  <- princomp(stats[,sumstats_header])
+#sumstats_header <- sumstats_header[1:5]
+
+PCA_sumstats <- c(1,2,3,4,7)
+
+PCA_stats  <- princomp(stats[,PCA_sumstats])
 
 
 # load observed stats
@@ -20,13 +24,13 @@ if (simulated_target_data){
   for (pGSMvalue in seq_along(true_gsm)){
     
     pGSMfolder <- paste0("P", true_gsm[pGSMvalue])
-    for (scenario in scenarios_number) {
-      target <- read.table(file = paste0("results/Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats"), header = T)
+    for (scenario in seq_along(scenarios_number)) {
+      target <- read.table(file = paste0("results/",project,"/Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats"), header = T)
       main_title <- paste("PCA on summary statistics for scenario",scenario)
       
-      PCA_target <- predict(PCA_stats, target[sumstats_header])
+      PCA_target <- predict(PCA_stats, target[PCA_sumstats])
       
-      if (maxPCA>length(sumstats_header)) maxPCA <- length(sumstats_header)
+      if (maxPCA>length(PCA_sumstats)) maxPCA <- length(PCA_sumstats)
       
       if (g_out=="pdf"){
         file_name <- paste0("results/",project,"/Results/PCA/",scenarios[scenario],"_",true_gsm[pGSMvalue],"_PCA.pdf")
@@ -58,9 +62,9 @@ if (simulated_target_data){
   target <- read.table(file = paste0("results/",project,"/target.sumstats"), header = T)
   main_title <- paste("PCA on summary statistics for project",project)
 
-  PCA_target <- predict(PCA_stats, target[sumstats_header])
+  PCA_target <- predict(PCA_stats, target[PCA_sumstats])
   
-  if (maxPCA>length(sumstats_header)) maxPCA <- length(sumstats_header)
+  if (maxPCA>length(PCA_sumstats)) maxPCA <- length(PCA_sumstats)
   
   if (g_out=="pdf"){
     file_name <- paste0("results/",project,"/",project,"_PCA.pdf")

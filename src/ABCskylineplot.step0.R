@@ -33,12 +33,15 @@ if (!simulated_target_data){
   
 }else{ # i.e. simulated_target_data=T
 
-  sims_exist <- file.exists("results/Simulations")
+  sims_exist <- file.exists(paste0("results/",project,"/Simulations"))
   
   if (!sims_exist){
     # creation of .par files for simulations
     number_of_scenarios  <- length(scenarios) 
-    for (scenario in scenarios_number){
+    
+    if(.Platform$OS.type == "unix") system( paste0("mkdir results/",project,"/fastsimcoal/") ) 
+    
+    for (scenario in seq_along(scenarios_number)){
       scenario_name <- scenarios[scenario]
       cat(paste("Creating .par files for scenario:",scenario_name," (listed below)\n"))
       demographic_model <- readLines(paste("src/Scenari/",scenario_name,".simcoal",sep=""))

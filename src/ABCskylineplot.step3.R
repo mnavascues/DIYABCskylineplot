@@ -4,13 +4,16 @@
 #
 ################################################################################
 
-
+ABC_sumstats <- c(1,2,3,4,7) #1:7
 
 # load parameters reference table
 load( file = paste0("results/",project,"/",project,".params.RData") )
 load( file = paste0("results/",project,"/",project,".mutparams.RData") )
 # load statistics for reference table
 load( file = paste0("results/",project,"/",project,".sumstats.RData") )
+
+sims2keep <- seq_len(nrow(stats)) #which(stats$NAL_1_1!=1.0)
+
 
 G <- paste("G",1:num_of_points,sep="")
 Tmax <- prior_TAU_max    
@@ -22,20 +25,26 @@ newparams <- matrix(data=NA,
 
 generations <- seq(from=0, to=Tmax, length.out=num_of_points)
 
-for (gen in 1:length(generations)){
-  lower_than_TAU1 <- which( generations[gen] < params[,"TAU1"])
-  newparams[ lower_than_TAU1 , gen ] <- params[ lower_than_TAU1, "THETA0"]
-  if (max_num_of_periods==2){
-    higher_than_TAU <- which( generations[gen] >= params[,"TAU1"])
-    newparams[ higher_than_TAU , gen ] <- params[ higher_than_TAU, "THETA1"] 
-  }else{
-    for (period in min_num_of_periods:(max_num_of_periods-1)){
-      higher_than_TAU <- which( generations[gen] >= params[,paste("TAU",period,sep="")])
-      newparams[ higher_than_TAU , gen ] <- params[ higher_than_TAU, paste("THETA",period,sep="")] 
+newparams_exist <- file.exists(paste0("results/",project,"/",project,"_newparams.RData"))
+
+if(!newparams_exist){
+  for (gen in 1:length(generations)){
+    lower_than_TAU1 <- which( generations[gen] < params[,"TAU1"])
+    newparams[ lower_than_TAU1 , gen ] <- params[ lower_than_TAU1, "THETA0"]
+    if (max_num_of_periods==2){
+      higher_than_TAU <- which( generations[gen] >= params[,"TAU1"])
+      newparams[ higher_than_TAU , gen ] <- params[ higher_than_TAU, "THETA1"] 
+    }else{
+      for (period in min_num_of_periods:(max_num_of_periods-1)){
+        higher_than_TAU <- which( generations[gen] >= params[,paste("TAU",period,sep="")])
+        newparams[ higher_than_TAU , gen ] <- params[ higher_than_TAU, paste("THETA",period,sep="")] 
+      }
     }
   }
+  save(newparams,file = paste0("results/",project,"/",project,"_newparams.RData"))
+}else{
+  load(file = paste0("results/",project,"/",project,"_newparams.RData"))
 }
-save(newparams,file = paste0("results/",project,"/",project,"_newparams.RData"))
 
 
 
@@ -47,7 +56,7 @@ if (simulated_target_data) {
     
     pGSMfolder <- paste0("P", true_gsm[pGSMvalue])
 
-    for (scenario in scenarios_number) {
+    for (scenario in seq_along(scenarios_number)) {
       
       source(paste0("src/Scenari/",scenarios[scenario],".R"))
       
@@ -66,8 +75,8 @@ if (simulated_target_data) {
       ratioNe_hat   <- array(NA,dim=number_of_replicates)
       ratioNe_95HPD <- matrix(NA, nrow = number_of_replicates , ncol = 2 )
       
-      target <- read.table(file = paste0("results/Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats"), header = T)
-      target <- target[sumstats_header]
+      target <- read.table(file = paste0("results/",project,"/Simulations/",pGSMfolder,"/",scenarios[scenario],"/",scenarios[scenario],".sumstats"), header = T)
+      #target <- target[ABC_sumstats]
       
       constant_model <- params$PERIODS
       constant_model[constant_model==1]           <- "Constant"
@@ -77,64 +86,67 @@ if (simulated_target_data) {
       print("Calculating skyline plots for simulated target data\n")
       pb <- txtProgressBar(min=0, max=number_of_replicates, initial=0, char=".", style=3)
       
-      for(sim in 1:number_of_replicates){
-        setTxtProgressBar(pb,sim)
+      for(replic in 1:number_of_replicates){
+        setTxtProgressBar(pb,replic)
         
-        abc_target <- target[sim,sumstats_header]
+        abc_target <- target[replic,ABC_sumstats]
         abcresult <- NA
         abcresult <- abc(target  = abc_target,
-                         param   = newparams,
-                         sumstat = stats[sumstats_header],
+                         param   = newparams[sims2keep],
+                         sumstat = stats[sims2keep,ABC_sumstats],
                          tol     = proportion_of_sims_kept,
                          method  = "loclinear",
                          hcorr   = F,
                          transf  = "log",
                          trace   = F)
         abcresult <- summary(abcresult,print=F)
-        sky_median[sim,]   <- abcresult[3,]
-        sky_lowerHPD[sim,] <- abcresult[2,]
-        sky_upperHPD[sim,] <- abcresult[6,]
+        sky_median[replic,]   <- abcresult[3,]
+        sky_lowerHPD[replic,] <- abcresult[2,]
+        sky_upperHPD[replic,] <- abcresult[6,]
         
         if (prior_PERIODS=="Poisson"){
+          model_choice <- NA
           model_choice <- postpr(target  = abc_target,
-                                 index   = constant_model,
-                                 sumstat = stats[sumstats_header],
+                                 index   = constant_model[sims2keep],
+                                 sumstat = stats[sims2keep,ABC_sumstats],
                                  tol     = proportion_of_sims_kept,
-                                 corr    = T,
+                                 corr    = F,
                                  method  = "mnlogistic",
                                  trace=F)
-          test_constant_model_posterior[sim,] <- model_choice$pred
+          test_constant_model_posterior[replic,] <- model_choice$pred
         }else{
           model_choice <-NULL
         }
         
         if (max_num_of_periods==2){
           ratioNe <- params[,"THETA1"]/params[,"THETA0"]
+          abcresult <- NA
           abcresult <- abc(target  = abc_target,
-                           param   = ratioNe,
-                           sumstat = stats[,sumstats_header],
+                           param   = ratioNe[sims2keep],
+                           sumstat = stats[sims2keep,ABC_sumstats],
                            tol     = proportion_of_sims_kept,
                            method  = "loclinear",
                            transf  = "log",
-                           hcorr   = F,
+                           hcorr   = T,
                            trace=T)
-          ratioNe_hat[sim]    <- summary(abcresult,print=F)[3]  
-          ratioNe_95HPD[sim,] <- c(summary(abcresult,print=F)[2],summary(abcresult,print=F)[6])
+          ratioNe_hat[replic]    <- summary(abcresult,print=F)[3]  
+          ratioNe_95HPD[replic,] <- c(summary(abcresult,print=F)[2],summary(abcresult,print=F)[6])
         }
         
         if (length(which(dimnames(mut_params)[[2]]=="pmic_1"))==1){
+          abcresult <- NA
           abcresult <- abc(target  = abc_target,
-                           param   = mut_params[,"pmic_1"],
-                           sumstat = stats[,sumstats_header],
+                           param   = mut_params[sims2keep,"pmic_1"],
+                           sumstat = stats[sims2keep,ABC_sumstats],
                            tol     = proportion_of_sims_kept,
                            method  = "loclinear",
-                           hcorr   = F,
+                           hcorr   = T,
                            transf  = "logit",
                            logit.bounds = matrix(c(prior_GSM_min,prior_GSM_max),ncol=2),
                            trace=T)
           
-          pGSM_hat[sim]    <- summary(abcresult,print=F)[3]  
-          pGSM_95HPD[sim,] <- c(summary(abcresult,print=F)[2],summary(abcresult,print=F)[6])
+          pGSM_hat[replic]    <- summary(abcresult,print=F)[3]  
+          pGSM_95HPD[replic,] <- c(summary(abcresult,print=F)[2],summary(abcresult,print=F)[6])
         }
         
       }
@@ -243,12 +255,12 @@ if (simulated_target_data) {
   # load observed stats
   target <- read.table(file = paste0("results/",project,"/target.sumstats"), header = T)
   target <- target[sumstats_header]
-  abc_target <- target[sumstats_header]
+  abc_target <- target[ABC_sumstats]
 
   # perform abc (calculate posterior)
   abcresult <- abc(target  = abc_target,
                    param   = newparams,
-                   sumstat = stats[,sumstats_header],
+                   sumstat = stats[,ABC_sumstats],
                    tol     = proportion_of_sims_kept,
                    method  = "loclinear",
                    hcorr = F,
@@ -325,7 +337,7 @@ if (simulated_target_data) {
   if (prior_PERIODS=="Poisson"){
     model_choice <- postpr(target  = abc_target,
                            index   = constant_model,
-                           sumstat = stats[sumstats_header],
+                           sumstat = stats[ABC_sumstats],
                            tol     = proportion_of_sims_kept,
                            corr    = T,
                            method  = "mnlogistic",
@@ -344,10 +356,10 @@ if (simulated_target_data) {
     ratioNe <- params[,"THETA1"]/params[,"THETA0"]
     abcresult <- abc(target  = abc_target,
                      param   = ratioNe,
-                     sumstat = stats[,sumstats_header],
+                     sumstat = stats[,ABC_sumstats],
                      tol     = proportion_of_sims_kept,
                      method  = "loclinear",
-                     hcorr   = F,
+                     hcorr   = T,
                      transf  = "log",
                      trace=T)
     ratioNe_hat   <- summary(abcresult,print=F)[3]  
@@ -385,10 +397,10 @@ if (simulated_target_data) {
   if (length(which(dimnames(mut_params)[[2]]=="pmic_1"))==1){
     abcresult <- abc(target  = abc_target,
                      param   = mut_params[,"pmic_1"],
-                     sumstat = stats[,sumstats_header],
+                     sumstat = stats[,ABC_sumstats],
                      tol     = proportion_of_sims_kept,
                      method  = "loclinear",
-                     hcorr = F,
+                     hcorr = T,
                      transf  = "logit",
                      logit.bounds = matrix(c(prior_GSM_min,prior_GSM_max),ncol=2),
                      trace=T)
@@ -425,10 +437,10 @@ if (simulated_target_data) {
   if (length(which(dimnames(mut_params)[[2]]=="snimic_1"))==1){
     abcresult <- abc(target  = abc_target,
                      param   = mut_params[,"snimic_1"],
-                     sumstat = stats[,sumstats_header],
+                     sumstat = stats[,ABC_sumstats],
                      tol     = proportion_of_sims_kept,
                      method  = "loclinear",
-                     hcorr = F,
+                     hcorr = T,
                      transf  = "logit",
                      logit.bounds = matrix(c(prior_SNI_min,prior_SNI_max),ncol=2),
                      trace=T)
@@ -479,14 +491,11 @@ if (simulated_target_data) {
 
 
 rm(params)
-
+rm(params2,generations2,adj.values2)
 rm(abc_target,
    newparams,
-   params2,
    stats,
    target,
-   generations2,
-   adj.values2,
    lower_than_TAU1)
 
 # save all results from step 3

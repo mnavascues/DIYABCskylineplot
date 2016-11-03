@@ -3,29 +3,27 @@
 
 # Miguel Navascués
 
-pgsm_values <- c(0.00,0.22,0.74)
+pgsm_values <- 0.22 #c(0.00,0.22,0.74)
 options(scipen = 999)
-project <- "Poisson"
+project <- "test"
+number_of_replicates <- 30
+scenarios_number <- c(8,20,26) #1:27
+scenarios <- paste("Scenario", scenarios_number, sep="")
+
+scen_table <- read.table("src/Scenari/scenari.table.txt",header=T,row.names=1)
+mkdir_command <- paste0("mkdir results/",project,"/Results/BayesFactor")
+system( mkdir_command )
 
 for (pgsm in seq_along(pgsm_values)){
-  
-  scen_table <- read.table("src/Scenari/scenari.table.txt",header=T,row.names=1)
-  mkdir_command <- paste0("mkdir results/",project,"/Results/BayesFactor")
-  system( mkdir_command )
-  
-  bayes_factor <- matrix(NA,nrow=1000,ncol=27)
-  
-  
-  
-  for (scen in c(1:27)){
-    load(paste0("results/",project,"/Results/Scenario",scen,"_",pgsm_values[pgsm],"_results.RData"))
+
+  bayes_factor <- matrix(NA,nrow=number_of_replicates,ncol=length(scenarios_number))
+  for (scen in seq_along(scenarios_number)){
+    load(paste0("results/",project,"/Results/",scenarios[scen],"_",pgsm_values[pgsm],"_results.RData"))
     bayes_factor[,scen] <- test_constant_model$posterior[,2]/test_constant_model$posterior[,1]
     
     bayes_factor[which(is.infinite(bayes_factor[,scen])),scen] <- NA
   }
-  
-  
-  
+
   pdf(file=paste0("results/",project,"/Results/BayesFactor/BayesFactor_",pgsm_values[pgsm],".pdf"),width=5,height=4)
   plot.new()
   plot.window(xlim=c(0,5), xaxs="i",
@@ -50,14 +48,15 @@ for (pgsm in seq_along(pgsm_values)){
   text(4,54.77226,"very strong",cex=0.8)
   text(4,173.2051,"decisive",cex=0.8)
   main_title <- expression()
-  boxplot(bayes_factor[,c(8,20,26)], add=T, names=NA, ylab="Bayes factor", pch=".")
+  boxplot(bayes_factor, add=T, names=NA, ylab="Bayes factor", pch=".")
   axis(1, at=1:3 , labels= c("contraction","","constant") , las=1, tick=F)
   axis(1, at=1:3 , labels= c("","expansion","") , line=1, las=1, tick=F)
   dev.off()
+
+}  
   
   
-  
-  
+######################  
   
   
   

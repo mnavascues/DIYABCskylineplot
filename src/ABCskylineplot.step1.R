@@ -27,7 +27,7 @@ for (period in min_num_of_periods:max_num_of_periods){
   if (simulated_target_data==F) {
     copy_genepop_command <- paste0("cp ",inputfile," results/",project,"/",period,"period/",inputfile)
   }else{
-    copy_genepop_command <- paste0("cp ","results/Simulations/P",true_gsm[1],"/Scenario1/Scenario1_1.gen results/",project,"/",period,"period/",inputfile)
+    copy_genepop_command <- paste0("cp ","results/",project,"/Simulations/P",true_gsm[1],"/",scenarios[1],"/",scenarios[1],"_1.gen results/",project,"/",period,"period/",inputfile)
   }
   if(.Platform$OS.type == "unix") {
     system( copy_genepop_command )
@@ -49,6 +49,10 @@ for (period in min_num_of_periods:max_num_of_periods){
   
   
   #run simulations
+  batch_size <- 1
+  if (num_of_sims_per_period[period]>20) batch_size <- 10
+  if (num_of_sims_per_period[period]>200) batch_size <- 100
+  if (num_of_sims_per_period[period]>2000) batch_size <- 1000
   diyabc_command <- paste0(DIYABC_exe_name," -p ",directory,"/results/",project,"/",period,"period/ -r ",num_of_sims_per_period[period]," -g ",batch_size," -m -t ",num_of_threads," > ",directory,"/results/",project,"/",period,"period/run_sims.log")
   if(!run_in_cluster) {
     diyabc_command <- paste("./",diyabc_command,sep="")
@@ -166,10 +170,10 @@ stats <- cbind(stats,
 names(stats)<-sumstats_header
 
 # remove 100% monomorphic simulations
-sims2keep <- which(stats$NAL_1_1!=1.0)
-stats      <- stats[sims2keep,]
-params     <- params[sims2keep,]
-mut_params <- as.matrix(mut_params[sims2keep,])
+#sims2keep <- which(stats$NAL_1_1!=1.0)
+#stats      <- stats[sims2keep,]
+#params     <- params[sims2keep,]
+#mut_params <- as.matrix(mut_params[sims2keep,])
 
 save(stats, file = paste0("results/",project,"/",project,".sumstats.RData") )
 rm(stats)

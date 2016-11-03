@@ -5,20 +5,20 @@
 ################################################################################
 
 # If simulations have already been performed they are in folder "Simulations"
-sims_exist <- file.exists("results/Simulations")
+sims_exist <- file.exists(paste0("results/",project,"/Simulations"))
 
 if (simulated_target_data & !sims_exist){
-  if(.Platform$OS.type == "unix") system( "mkdir results/Simulations" )  
+  if(.Platform$OS.type == "unix") system( paste0("mkdir results/",project,"/Simulations") )  
   
-  random_sim <- array(NA,number_of_scenarios)
+  #random_sim <- array(NA,number_of_scenarios)
   
   for (pGSMvalue in seq_along(true_gsm)){
     
     pGSMfolder <- paste0("P", true_gsm[pGSMvalue])
-    mkdir_command <- paste("mkdir results/Simulations/",pGSMfolder,sep="")
+    mkdir_command <- paste0("mkdir results/",project,"/Simulations/",pGSMfolder)
     if(.Platform$OS.type == "unix") system( mkdir_command )  
     
-    for (scenario in scenarios_number) {
+    for (scenario in seq_along(scenarios_number)) {
       
       scenario_name <- scenarios[scenario]
       
@@ -30,12 +30,14 @@ if (simulated_target_data & !sims_exist){
       # name of par file 
       par_file <- paste0(scenario_name,"_",true_gsm[pGSMvalue],".par")
       
+      #main_directory <- getwd()
+
       # write fastsimcoal command
       fastsimcoal_run <- paste( "bin/fastsimcoal",
                                 "-i", par_file,             # parameter file (.par)
                                 "-n", number_of_replicates) # number of simulations per combination of parameter values
       if (quiet)  fastsimcoal_run <- paste(fastsimcoal_run, "-q")    # run in quiet mode
-      fastsimcoal_run <- paste0(fastsimcoal_run, " > fastsimcoal",scenario,".log")
+      fastsimcoal_run <- paste0(fastsimcoal_run, " > results/",project,"/fastsimcoal/fastsimcoal",scenario,".log")
       
       # run fastsimcoal command
       if(.Platform$OS.type == "unix") {
@@ -46,11 +48,11 @@ if (simulated_target_data & !sims_exist){
       }
       
       #sample one random simulation to look in more detail
-      random_sim[scenario] <- sample(number_of_replicates,1)
+      #random_sim[scenario] <- sample(number_of_replicates,1)
       
       # one direcotory for each scenario
       ##############################################################
-      mkdir_command <- paste("mkdir results/Simulations/",pGSMfolder,"/Scenario",scenario,sep="")
+      mkdir_command <- paste0("mkdir results/",project,"/Simulations/",pGSMfolder,"/",scenario_name)
       if(.Platform$OS.type == "unix") {
         system( mkdir_command )
       }else{
@@ -61,8 +63,8 @@ if (simulated_target_data & !sims_exist){
       
       #create an input file to use with Beauti + BEAST
       if (do_BEAST_input){
-        BEAST_file_name <- paste0("results/Simulations/",pGSMfolder,"/Scenario",scenario,"/Scen",scenario,"_sim",random_sim[scenario],"_input4BEAUTi.txt")
-        temp_file_name <- paste0(scenario_name,"_",true_gsm[pGSMvalue],"/",scenario_name,"_",true_gsm[pGSMvalue],"_1_",random_sim[scenario],".arp")
+        BEAST_file_name <- paste0("results/",project,"/Simulations/",pGSMfolder,"/",scenario_name,"/Scen",scenarios_number[scenario],"_sim1_input4BEAUTi.txt")
+        temp_file_name <- paste0(scenario_name,"_",true_gsm[pGSMvalue],"/",scenario_name,"_",true_gsm[pGSMvalue],"_1_1.arp")
         
         lines_to_skip <- which(readLines(temp_file_name)=="\t\tSampleData= {")
         
@@ -84,7 +86,7 @@ if (simulated_target_data & !sims_exist){
       #convert arlequin format into genepop format
       for (replic in 1:number_of_replicates){
         temp_file_name <- paste0(scenario_name,"_",true_gsm[pGSMvalue],"/",scenario_name,"_",true_gsm[pGSMvalue],"_1_",replic,".arp")
-        out_file_name <- paste0("results/Simulations/",pGSMfolder,"/Scenario",scenario,"/Scenario",scenario,"_",replic,".gen")
+        out_file_name <- paste0("results/",project,"/Simulations/",pGSMfolder,"/",scenario_name,"/",scenario_name,"_",replic,".gen")
 
 
                 
@@ -117,8 +119,8 @@ if (simulated_target_data & !sims_exist){
           system( rm_command )
           rm_command <- paste0("rm ",scenario_name,"_",true_gsm[pGSMvalue],".par")
           system( rm_command )
-          rm_command <- paste0("rm fastsimcoal",scenario,".log")
-          system( rm_command )
+          #rm_command <- paste0("rm fastsimcoal",scenario,".log")
+          #system( rm_command )
         }else{
           print("not implemented in non-unix OS")
           #del_command <- paste("del /f/s/q",scenarios[scenario],"> nul")
@@ -126,6 +128,27 @@ if (simulated_target_data & !sims_exist){
           #shell( del_command )
           #shell( rmdir_command )
         }
+      }else{
+        cat(paste("\nMoving fastsimcoal output\n"))
+        
+        
+        if(.Platform$OS.type == "unix") {
+          mv_command <- paste0("mv ",scenario_name,"_",true_gsm[pGSMvalue]," results/",project,"/fastsimcoal/",scenario_name,"_",true_gsm[pGSMvalue])
+          system( mv_command )
+          mv_command <- paste0("mv ",scenario_name,"_",true_gsm[pGSMvalue],".par results/",project,"/fastsimcoal/",scenario_name,"_",true_gsm[pGSMvalue],".par")
+          system( mv_command )
+          #rm_command <- paste0("rm fastsimcoal",scenario,".log")
+          #system( rm_command )
+        }else{
+          print("not implemented in non-unix OS")
+          #del_command <- paste("del /f/s/q",scenarios[scenario],"> nul")
+          #rmdir_command <- paste("rmdir /s/q",scenarios[scenario],"> nul")
+          #shell( del_command )
+          #shell( rmdir_command )
+        }
+        
+        
+        
       }  
       
       

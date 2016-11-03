@@ -3,12 +3,60 @@
 
 # Miguel Navascués
 
-model <- "P22"
-
+pgsm_values <- 0.22 #c(0.00,0.22,0.74)
 options(scipen = 999)
-scen_table <- read.table("Scenari/scenari.table.txt",header=T,row.names=1)
-mkdir_command <- paste0("mkdir ",model,"/Results")
+project <- "test"
+number_of_replicates <- 30
+scenarios_number <- c(8,20,26) #1:27
+scenarios <- paste("Scenario", scenarios_number, sep="")
+
+
+scen_table <- read.table("src/Scenari/scenari.table.txt",header=T,row.names=1)
+mkdir_command <- paste0("mkdir results/",project,"/Results/Error")
 system( mkdir_command )
+
+for (pgsm in seq_along(pgsm_values)){
+  pdf(file=paste0("results/",project,"/Results/Error/Error_",pgsm_values[pgsm],".pdf"),width=4,height=8)
+  par(mfrow=c(3,1), mar=c(3,3,1,1), oma=c(3,3,0,0))
+  for (scen in seq_along(scenarios_number) ){
+
+    load(paste0("results/",project,"/Results/",scenarios[scen],"_",pgsm_values[pgsm],"_results.RData"))
+    label_x     <- "t (mutations/locus)"
+    label_y     <- c("relative mean absolute error"," relative bias")
+    
+    plot( generations,
+          sky_error$relative_bias*(-1), #bias was calculated with the incorrect sign !!!!
+          lwd=2,
+          col="dodgerblue",
+          type="l",
+          xlab="",
+          ylab="",
+          xlim=c(0,4),
+          ylim=c(-1,10))
+    lines(generations,sky_error$relative_mean_absolute_error,lty=2,lwd=2,col="black")
+    abline(h=0,lwd=0.5)
+    
+    
+    if (scenarios_number[scen]==26){
+      mtext(label_x, side=1, adj=0.5, cex=1, outer=TRUE)
+      mtext(label_y, side=2,  adj=c(0.25,0.8), cex=1, outer=TRUE,col=c("black","dodgerblue"))
+    }
+    
+    if(scenarios_number[scen]==8)  legend(x="topright",legend="contraction",cex=1.2,bty="n")
+    if(scenarios_number[scen]==20) legend(x="topright",legend="expansion",cex=1.2,bty="n")
+    if(scenarios_number[scen]==26) legend(x="topright",legend="constant size",cex=1.2,bty="n")
+    
+    
+    
+    
+    
+  }
+  dev.off()
+  
+}
+
+#######################################
+
 
 
 # MAIN TEXT FIGURE
