@@ -25,7 +25,7 @@ for (period in min_num_of_periods:max_num_of_periods){
   # genepop file (original data file)
   ############################################################  
   if (simulated_target_data==F) {
-    copy_genepop_command <- paste0("cp ",inputfile," results/",project,"/",period,"period/",inputfile)
+    copy_genepop_command <- paste0("cp data/",inputfile," results/",project,"/",period,"period/",inputfile)
   }else{
     copy_genepop_command <- paste0("cp ","results/",project,"/Simulations/P",true_gsm[1],"/",scenarios[1],"/",scenarios[1],"_1.gen results/",project,"/",period,"period/",inputfile)
   }

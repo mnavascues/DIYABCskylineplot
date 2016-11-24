@@ -59,6 +59,9 @@ if (simulated_target_data){
     
   }  
 }else{
+  mkdir_command <- paste0("mkdir results/",project,"/Results")
+  if(.Platform$OS.type == "unix") system( mkdir_command )
+
   target <- read.table(file = paste0("results/",project,"/target.sumstats"), header = T)
   main_title <- paste("PCA on summary statistics for project",project)
 
@@ -67,7 +70,7 @@ if (simulated_target_data){
   if (maxPCA>length(PCA_sumstats)) maxPCA <- length(PCA_sumstats)
   
   if (g_out=="pdf"){
-    file_name <- paste0("results/",project,"/",project,"_PCA.pdf")
+    file_name <- paste0("results/",project,"/Results/",project,"_PCA.pdf")
     pdf(file=file_name, width=11.7, height=8.3)
   }
   

@@ -205,13 +205,9 @@ if (simulated_target_data) {
   }
 
 }else{ # END IF SIMULATED TARGET DATA
-  
-
-    
-    
   # plot prior skyline
     
-  file_name <- paste0("results/",project,"/",project,"_ABCsky_prior.",g_out)
+  file_name <- paste0("results/",project,"/Results/",project,"_ABCsky_prior.",g_out)
   if (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300) 
   if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)                        
   if (g_out=="pdf") pdf(file    =file_name, width=11.7, height=8.3)
@@ -289,7 +285,7 @@ if (simulated_target_data) {
       
       
   # plot skyline
-  file_name <- paste0("results/",project,"/",project,"_ABCsky_posterior.",g_out)
+  file_name <- paste0("results/",project,"/Results/",project,"_ABCsky_posterior.",g_out)
   if (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300)
   if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)
   if (g_out=="pdf") pdf(file    =file_name, width=11.7, height=8.3)
@@ -418,7 +414,7 @@ if (simulated_target_data) {
     pGSM_hat   <- summary(abcresult,print=F)[3]  
     pGSM_95HPD <- c(summary(abcresult,print=F)[2],summary(abcresult,print=F)[6])
     # plot prior and posterior pGSM
-    file_name <- paste0("results/",project,"/",project,"_pGSM.",g_out)
+    file_name <- paste0("results/",project,"/Results/",project,"_pGSM.",g_out)
     if (g_out=="png") png(filename=file_name, width=11.7, height=8.3, units = "in", res=300)
     if (g_out=="svg") svg(filename=file_name, width=11.7, height=8.3)
     if (g_out=="pdf") pdf(file    =file_name, width=11.7, height=8.3)
@@ -429,7 +425,7 @@ if (simulated_target_data) {
          freq=F,
          ylim=c(0,6),
          main="",
-         xlab="pGSM",
+         xlab=expression("P"["GSM"]),
          ylab="probability density")
     hist(abcresult$adj.values,
          #breaks=seq(-1,2,0.05),

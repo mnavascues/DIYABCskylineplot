@@ -110,7 +110,7 @@ prior_SNI_i_shape <- 0 # set shape to 0 if you want all individual loci to take 
 directory <- "/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot"
 
 # Set project name (affects subdirectory and output files names)
-project   <- "cheloniaALL"
+project   <- "PoissonLU"
 
 # Set to FALSE to keep all DIYABC output files
 # (most important files, such as the one containing reference table are always kept)
