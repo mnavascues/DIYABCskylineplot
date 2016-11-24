@@ -3,20 +3,18 @@
 
 # Miguel Navascués
 
-project <- "ratioNe"
-number_of_replicates <- 10
-
+pgsm_values <- c(0.00,0.22,0.74)
 options(scipen = 999)
-scen_table <- read.table("Scenari/scenari.table.txt",header=T,row.names=1)
-results_folder_exist <- file.exists(paste0(project,"/Results"))
-if (!results_folder_exist){
-  mkdir_command <- paste0("mkdir ",project,"/Results")
-  system( mkdir_command )
-}
+project <- "ratioNeLU"
+number_of_replicates <- 100
+scenarios_number <- 1:27
+scenarios <- paste("Scenario", scenarios_number, sep="")
 
-pGSM <- c(0.00,0.22,0.74)
+scen_table <- read.table("src/Scenari/scenari.table.txt",header=T,row.names=1)
+mkdir_command <- paste0("mkdir results/",project,"/Results/ratioNe")
+system( mkdir_command )
 
-for (i in seq_along(pGSM)){
+for (pgsm in seq_along(pgsm_values)){
 
   ratioNe          <- matrix(NA,nrow=number_of_replicates,ncol=27)
   lower95HPD       <- matrix(NA,nrow=number_of_replicates,ncol=27)
@@ -27,7 +25,7 @@ for (i in seq_along(pGSM)){
   includes_1    <- array(NA,27)
 
   for (scen in c(1:27)){
-    load(paste0(project,"/Results/Scenario",scen,"_",pGSM[i],"_results.RData"))
+    load(paste0("results/",project,"/Results/Scenario",scen,"_",pgsm_values[pgsm],"_results.RData"))
     ratioNe[,scen]      <- ratioNe_hat
     lower95HPD[,scen]   <- ratioNe_95HPD[,1]
     upper95HPD[,scen]   <- ratioNe_95HPD[,2]
@@ -38,7 +36,7 @@ for (i in seq_along(pGSM)){
   
   
   
-  pdf(file=paste0(project,"/Results/RatioNe_",pGSM[i],".pdf"),width=5,height=4)
+  pdf(file=paste0("results/",project,"/Results/ratioNe/RatioNe_",pgsm_values[pgsm],".pdf"),width=5,height=4)
   boxplot(log10(ratioNe[,c(8,20,26)]),
           ylim=c(-5,4),
           names=NA, 

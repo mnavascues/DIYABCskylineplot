@@ -24,7 +24,7 @@ if (!file.exists(paste0("results/",project))){
 if (!simulated_target_data){
 
   #Reads target (genepop file) data to get sample size and number of loci
-  temp <- read.genepop(inputfile, ncode=3)
+  temp <- read.genepop(paste0("data/",inputfile), ncode=3)
   data_names_of_loci <- levels(temp$loc.fac)
   data_num_of_loci   <- nlevels(temp$loc.fac)
   data_sample_size   <- as.integer(sum(temp$ploidy))

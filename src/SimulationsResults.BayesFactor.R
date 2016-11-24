@@ -5,7 +5,7 @@
 
 pgsm_values <- c(0.00,0.22,0.74)
 options(scipen = 999)
-project <- "Poisson"
+project <- "PoissonLU"
 number_of_replicates <- 100
 scenarios_number <- 1:27
 scenarios <- paste("Scenario", scenarios_number, sep="")

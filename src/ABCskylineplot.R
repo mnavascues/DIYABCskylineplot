@@ -53,7 +53,7 @@ seed                     <- 6132       # For random number generation (in R, DIY
 
 # ON DEMOGRAPHIC & MUTATIONAL MODEL
 #----------------------------------
-num_of_points      <- 30    # number of points to draw skyline plot
+num_of_points      <- 50    # number of points to draw skyline plot
 
 # prior on number of periods
 prior_PERIODS      <- "Poisson" # "Poisson" or "constant" (num_of_periods = max_num_of_periods)
@@ -66,7 +66,7 @@ prior_THETA_min  <- 1E-3    # minumum theta=4Nu (MUST: prior_THETA_min>=4*MUTRAT
 prior_THETA_max  <- 1E4     # maximum theta=4Nu
 
 # prior on time of population size changes
-prior_TAU            <- "UN"   # "LU" for log-uniform, "UN" for uniform
+prior_TAU            <- "LU"   # "LU" for log-uniform, "UN" for uniform
 prior_TAU_max        <- 4     # maximum time (measured in number of mutations)
 
 # prior on mutational model
@@ -81,7 +81,7 @@ prior_MUTRATE_i_max   <- prior_MUTRATE_max
 prior_MUTRATE_i_mean  <- "Mean_u"
 prior_MUTRATE_i_shape <- 0 # set shape to 0 if you want all individual loci to take the same value (= mean)
 
-prior_GSM         <- "UN"   # "LU" for log-uniform, "UN" for uniform, "GA" fro gamma
+prior_GSM         <- "UN"   # "LU" for log-uniform, "UN" for uniform, "GA" for gamma
 prior_GSM_min     <- 0.0 # Set minimum and maximum to 0 if you want a Stepwise Mutation Model
 prior_GSM_max     <- 1.0
 prior_GSM_mean    <- 0
@@ -110,11 +110,11 @@ prior_SNI_i_shape <- 0 # set shape to 0 if you want all individual loci to take 
 directory <- "/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot"
 
 # Set project name (affects subdirectory and output files names)
-project   <- "Poisson"
+project   <- "cheloniaALL"
 
 # Set to FALSE to keep all DIYABC output files
 # (most important files, such as the one containing reference table are always kept)
-remove_DIYABC_output <- F
+remove_DIYABC_output <- T
 DIYABC_exe_name      <- "bin/diyabc2.1.0" #"/home/bin/Diyabc/2.1.0/x64/bin/general"
 run_in_cluster       <- F
 num_of_threads       <- 12 # maximal number of the threads
@@ -127,9 +127,9 @@ maxPCA <- 7
 g_out <- "pdf"
 
 # specify whether target data will be simulated or will be read from files
-simulated_target_data <- T
+simulated_target_data <- F
  # Microsatellite data info
-motif <- 1 # a single value if all loci have the same repeat length
+motif <- c(2,2,2,4,2,2,2,2,2,2) # a single value if all loci have the same repeat length
            # or a factor with each motif length in the same order as in
            # inputfile
 range <- 1000 # a single value or a factor for a different value for each locus
@@ -137,7 +137,7 @@ range <- 1000 # a single value or a factor for a different value for each locus
 parseCommandArgs()
 if (!simulated_target_data){ #specify files for target data     
   # Genepop input file. NB: use .gen extension
-  if (!exists("inputfile")) inputfile <- "data/genepop_file.gen"
+  if (!exists("inputfile")) inputfile <- "cheloniaALL.gen" #place it in data folder
 }else{ #specify scenarios for simulating target data
   scenarios_number <- 1:27 #c(8,20,26) #
   scenarios <- paste("Scenario", scenarios_number, sep="")

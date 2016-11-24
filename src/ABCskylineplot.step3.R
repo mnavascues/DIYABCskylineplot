@@ -18,16 +18,19 @@ sims2keep <- seq_len(nrow(stats)) #which(stats$NAL_1_1!=1.0)
 G <- paste("G",1:num_of_points,sep="")
 Tmax <- prior_TAU_max    
 
-newparams <- matrix(data=NA,
-                    nrow=dim(params)[1],
-                    ncol=num_of_points,
-                    dimnames = list(1:dim(params)[1],G))
-
-generations <- seq(from=0, to=Tmax, length.out=num_of_points)
+if (prior_TAU=="LU"){
+  generations <- 10^seq(from=log10(0+0.1),to=log10(Tmax+0.1),length.out=num_of_points)-0.1
+}else{
+  generations <- seq(from=0, to=Tmax, length.out=num_of_points)
+}
 
 newparams_exist <- file.exists(paste0("results/",project,"/",project,"_newparams.RData"))
 
 if(!newparams_exist){
+  newparams <- matrix(data=NA,
+                      nrow=dim(params)[1],
+                      ncol=num_of_points,
+                      dimnames = list(1:dim(params)[1],G))
   for (gen in 1:length(generations)){
     lower_than_TAU1 <- which( generations[gen] < params[,"TAU1"])
     newparams[ lower_than_TAU1 , gen ] <- params[ lower_than_TAU1, "THETA0"]
@@ -53,10 +56,12 @@ if (simulated_target_data) {
   if(.Platform$OS.type == "unix") system( mkdir_command )
   
   for (pGSMvalue in seq_along(true_gsm)){
+    gc()
     
     pGSMfolder <- paste0("P", true_gsm[pGSMvalue])
 
     for (scenario in seq_along(scenarios_number)) {
+      gc()
       
       source(paste0("src/Scenari/",scenarios[scenario],".R"))
       
@@ -87,12 +92,13 @@ if (simulated_target_data) {
       pb <- txtProgressBar(min=0, max=number_of_replicates, initial=0, char=".", style=3)
       
       for(replic in 1:number_of_replicates){
+        gc()
         setTxtProgressBar(pb,replic)
         
         abc_target <- target[replic,ABC_sumstats]
         abcresult <- NA
         abcresult <- abc(target  = abc_target,
-                         param   = newparams[sims2keep],
+                         param   = newparams[sims2keep,],
                          sumstat = stats[sims2keep,ABC_sumstats],
                          tol     = proportion_of_sims_kept,
                          method  = "loclinear",
@@ -168,7 +174,7 @@ if (simulated_target_data) {
       
       par(cex.axis=2.5,cex.lab=2.5,mar=c(5.5,5.5,2,2))
       
-      generations <- seq(from=0, to=Tmax, length.out=num_of_points)
+      #generations <- seq(from=0, to=Tmax, length.out=num_of_points)
       limits_on_x <- c(0,max(generations))
       label_x     <- "t (mutations/locus)"
       label_y     <- expression("relative absolute error and relative bias on "*theta)
@@ -213,7 +219,7 @@ if (simulated_target_data) {
     
   par(cex.axis=2.5,cex.lab=2.5,mar=c(5.5,5.5,2,2))
     
-  generations <- seq(from=0, to=Tmax, length.out=num_of_points)
+  #generations <- seq(from=0, to=Tmax, length.out=num_of_points)
   limits_on_x <- c(0,max(generations))
   label_x     <- "t (mutations/locus)"
   label_y     <- expression("log"[10]*theta)
@@ -258,9 +264,10 @@ if (simulated_target_data) {
   abc_target <- target[ABC_sumstats]
 
   # perform abc (calculate posterior)
+  abcresult <- NA
   abcresult <- abc(target  = abc_target,
-                   param   = newparams,
-                   sumstat = stats[,ABC_sumstats],
+                   param   = newparams[sims2keep,],
+                   sumstat = stats[sims2keep,ABC_sumstats],
                    tol     = proportion_of_sims_kept,
                    method  = "loclinear",
                    hcorr = F,
@@ -273,7 +280,7 @@ if (simulated_target_data) {
  
       
   # get scale for skykline plot
-  generations <- seq(from=0, to=Tmax, length.out=num_of_points)
+  #generations <- seq(from=0, to=Tmax, length.out=num_of_points)
   limits_on_x <- c(0,max(generations))
   label_x     <- "t (mutations/locus)"
   label_y     <- expression("log"[10]*theta)
@@ -335,9 +342,10 @@ if (simulated_target_data) {
   
   
   if (prior_PERIODS=="Poisson"){
+    model_choice <- NA
     model_choice <- postpr(target  = abc_target,
-                           index   = constant_model,
-                           sumstat = stats[ABC_sumstats],
+                           index   = constant_model[sims2keep],
+                           sumstat = stats[sims2keep,ABC_sumstats],
                            tol     = proportion_of_sims_kept,
                            corr    = T,
                            method  = "mnlogistic",
@@ -354,9 +362,10 @@ if (simulated_target_data) {
 
   if (max_num_of_periods==2){
     ratioNe <- params[,"THETA1"]/params[,"THETA0"]
+    abcresult <- NA
     abcresult <- abc(target  = abc_target,
-                     param   = ratioNe,
-                     sumstat = stats[,ABC_sumstats],
+                     param   = ratioNe[sims2keep],
+                     sumstat = stats[sims2keep,ABC_sumstats],
                      tol     = proportion_of_sims_kept,
                      method  = "loclinear",
                      hcorr   = T,
@@ -395,9 +404,10 @@ if (simulated_target_data) {
   
   
   if (length(which(dimnames(mut_params)[[2]]=="pmic_1"))==1){
+    abcresult <- NA
     abcresult <- abc(target  = abc_target,
-                     param   = mut_params[,"pmic_1"],
-                     sumstat = stats[,ABC_sumstats],
+                     param   = mut_params[sims2keep,"pmic_1"],
+                     sumstat = stats[sims2keep,ABC_sumstats],
                      tol     = proportion_of_sims_kept,
                      method  = "loclinear",
                      hcorr = T,
@@ -435,9 +445,10 @@ if (simulated_target_data) {
   }
   
   if (length(which(dimnames(mut_params)[[2]]=="snimic_1"))==1){
+    abcresult <- NA
     abcresult <- abc(target  = abc_target,
-                     param   = mut_params[,"snimic_1"],
-                     sumstat = stats[,ABC_sumstats],
+                     param   = mut_params[sims2keep,"snimic_1"],
+                     sumstat = stats[sims2keep,ABC_sumstats],
                      tol     = proportion_of_sims_kept,
                      method  = "loclinear",
                      hcorr = T,

@@ -3,14 +3,12 @@
 
 # Miguel Navascués
 
-
-pgsm_values <- 0.22 #c(0.00,0.22,0.74)
+pgsm_values <- c(0.00,0.22,0.74)
 options(scipen = 999)
-project <- "test"
-number_of_replicates <- 30
-scenarios_number <- c(8,20,26) #1:27
+project <- "ratioNeLU"
+number_of_replicates <- 100
+scenarios_number <- 1:27
 scenarios <- paste("Scenario", scenarios_number, sep="")
-
 
 scen_table <- read.table("src/Scenari/scenari.table.txt",header=T,row.names=1)
 mkdir_command <- paste0("mkdir results/",project,"/Results/pGSM")
