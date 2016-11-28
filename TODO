@@ -1,0 +1,11 @@
+TODO
+
+ * Analysis scaled to Ne_tau (aDNA or prior on mutation rate per year)
+
+ * other DNA markers
+
+ * Add check of presence of all necessary files on folder
+
+ * Add upper time limit to skyline plot based on the expected TMRCA calculated
+   using Wojdyla et al. 2012 algorithm (http://dx.doi.org/10.1016/j.tpb.2011.09.003) ???
+
