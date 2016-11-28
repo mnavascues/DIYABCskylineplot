@@ -1,0 +1,23 @@
+# DIYABCskylineplot
+
+## A suite of R scripts to perform an ABC skyline plot analysis
+
+## by Miguel Navascués
+
+The skyline plot analysis is a statistical inference of the effective population size of a single isolated panmictic population and its changes through time. It has typically a graphical output (the "skyline plot") that represents the posterior distrobution of the effective population size (usually summarized as the median and 95%HPD) at different times.
+
+Currently, the code is implemented only to take a sinle population genotypes for one or more microsatellites loci.
+
+The code is composed by a suite of scripts in R (http://www.r-project.org/). They use the following R packages:
+
+*abc*      for ABC analysis
+*adegenet* for reading genepop files
+*graphics* for plotting PCA     
+*gplots*   for plotting 2D histograms     
+*hexbin*   for hexbin plots of summary statistic PCA
+*batch*    for running R script from command line with arguments
+
+In addition to R it **requires** the command line executable of [DIYABC](http://www1.montpellier.inra.fr/CBGP/diyabc/). It also requires [fastsimcoal](http://cmpg.unibe.ch/software/fastsimcoal/) for analysing pseudo observed data (simulated data for the evaluation of the method, not necessary for the analysis of empirical data).
+
+
+
