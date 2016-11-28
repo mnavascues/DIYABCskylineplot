@@ -12,8 +12,8 @@ The code is composed by a suite of scripts in R (http://www.r-project.org/). The
 
 *abc*      for ABC analysis
 *adegenet* for reading genepop files
-*graphics* for plotting PCA     
-*gplots*   for plotting 2D histograms     
+*graphics* for plotting PCA
+*gplots*   for plotting 2D histograms
 *hexbin*   for hexbin plots of summary statistic PCA
 *batch*    for running R script from command line with arguments
 
