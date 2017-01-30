@@ -48,12 +48,12 @@ library(abc);library(adegenet);library(graphics);library(gplots);library(hexbin)
 # ON ABC SIMULATIONS
 #--------------------
 num_of_sims              <- 1000000      # Number of simulations
-proportion_of_sims_kept  <- 0.01       # Tolerance level for ABC
+proportion_of_sims_kept  <- 0.001       # Tolerance level for ABC
 seed                     <- 6132       # For random number generation (in R, DIYABC & fastsimcoal)
 
 # ON DEMOGRAPHIC & MUTATIONAL MODEL
 #----------------------------------
-num_of_points      <- 50    # number of points to draw skyline plot
+num_of_points      <- 30    # number of points to draw skyline plot
 
 # prior on number of periods
 prior_PERIODS      <- "Poisson" # "Poisson" or "constant" (num_of_periods = max_num_of_periods)
@@ -64,13 +64,14 @@ max_num_of_periods <- 10        # max number of periods to simulate
 prior_THETA      <- "LU"    # "LU" for log-uniform, "UN" for uniform
 prior_THETA_min  <- 1E-3    # minumum theta=4Nu (MUST: prior_THETA_min>=4*MUTRATE)
 prior_THETA_max  <- 1E4     # maximum theta=4Nu
+MUTRATE          <- prior_THETA_min/4
 
 # prior on time of population size changes
-prior_TAU            <- "LU"   # "LU" for log-uniform, "UN" for uniform
-prior_TAU_max        <- 4     # maximum time (measured in number of mutations)
+prior_TAU            <- "LU"    # "LU" for log-uniform, "UN" for uniform
+prior_TAU_min        <- MUTRATE # maximum time (measured in number of mutations)
+prior_TAU_max        <- 25      # maximum time (measured in number of mutations)
 
 # prior on mutational model
-MUTRATE               <- prior_THETA_min/4
 prior_MUTRATE         <- "UN"   # "LU" for log-uniform, "UN" for uniform, "GA" for gamma
 prior_MUTRATE_min     <- MUTRATE
 prior_MUTRATE_max     <- MUTRATE
@@ -82,8 +83,8 @@ prior_MUTRATE_i_mean  <- "Mean_u"
 prior_MUTRATE_i_shape <- 0 # set shape to 0 if you want all individual loci to take the same value (= mean)
 
 prior_GSM         <- "UN"   # "LU" for log-uniform, "UN" for uniform, "GA" for gamma
-prior_GSM_min     <- 0.0 # Set minimum and maximum to 0 if you want a Stepwise Mutation Model
-prior_GSM_max     <- 1.0
+prior_GSM_min     <- 0 # Set minimum and maximum to 0 if you want a Stepwise Mutation Model
+prior_GSM_max     <- 1
 prior_GSM_mean    <- 0
 prior_GSM_shape   <- 0
 prior_GSM_i_min   <- prior_GSM_min
@@ -101,8 +102,6 @@ prior_SNI_i_max   <- prior_SNI_max
 prior_SNI_i_mean  <- "Mean_u_SNI"
 prior_SNI_i_shape <- 0 # set shape to 0 if you want all individual loci to take the same value (= mean)
 
-
-
 # ON DIRECTORY AND FILES & TARGET DATA
 #--------------------------------------
 
@@ -110,7 +109,7 @@ prior_SNI_i_shape <- 0 # set shape to 0 if you want all individual loci to take 
 directory <- "/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot"
 
 # Set project name (affects subdirectory and output files names)
-project   <- "PoissonLU"
+project   <- "Poisson"
 
 # Set to FALSE to keep all DIYABC output files
 # (most important files, such as the one containing reference table are always kept)
@@ -127,9 +126,9 @@ maxPCA <- 7
 g_out <- "pdf"
 
 # specify whether target data will be simulated or will be read from files
-simulated_target_data <- F
+simulated_target_data <- T
  # Microsatellite data info
-motif <- c(2,2,2,4,2,2,2,2,2,2) # a single value if all loci have the same repeat length
+motif <- 1 # a single value if all loci have the same repeat length
            # or a factor with each motif length in the same order as in
            # inputfile
 range <- 1000 # a single value or a factor for a different value for each locus
@@ -137,14 +136,14 @@ range <- 1000 # a single value or a factor for a different value for each locus
 parseCommandArgs()
 if (!simulated_target_data){ #specify files for target data     
   # Genepop input file. NB: use .gen extension
-  if (!exists("inputfile")) inputfile <- "cheloniaALL.gen" #place it in data folder
+  if (!exists("inputfile")) inputfile <- "test.gen" #place it in data folder
 }else{ #specify scenarios for simulating target data
-  scenarios_number <- 1:27 #c(8,20,26) #
+  scenarios_number <- 1:27 #
   scenarios <- paste("Scenario", scenarios_number, sep="")
 
   inputfile <- "simulated_data_genepop.gen"
   
-  number_of_replicates <- 100 # simulations to perform for each scenario
+  number_of_replicates <- 1000 # simulations to perform for each scenario
   sample_size          <- 50
   num_of_loci          <- 30
   true_mutrate         <- 1e-3
@@ -156,7 +155,7 @@ if (!simulated_target_data){ #specify files for target data
   quiet                     <- T # run fastsimcoal in quiet mode
 
   # create BEAST (i.e. BEAUTi) input file
-  do_BEAST_input            <- F
+  do_BEAST_input            <- T
 }
 parseCommandArgs()
 setwd(directory) 

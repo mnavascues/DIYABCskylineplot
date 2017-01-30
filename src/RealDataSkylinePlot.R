@@ -1,36 +1,137 @@
+cbbPalette <- c("#000000", "#009E73", "#e79f00", "#9ad0f3", "#0072B2", "#D55E00", 
+                "#CC79A7", "#F0E442")
+
+
 # Load results file
-load("/home/miguel/Work/Research/ABC_Skyline_plot/Real_datasets/WhaleShark/Requin/Requin_results.RData")
+load("/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot/results/Requin/Requin_step3.RData")
 WhaleSharkSky <- skylineplot
 WhaleSharkTest <- test_constant_model
 WhaleSharkPGSM <- list(pGSM_hat=pGSM_hat,pGSM_95HPD=pGSM_95HPD)
+WhaleSharkMutPrior <- mut_params
+WhaleSharkMutPost  <- abcresult$adj.values
 
-load("/home/miguel/Work/Research/ABC_Skyline_plot/Real_datasets/Leatherback/Leatherback/Leatherback_results.RData")
+
+load("/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot/results/Leatherback/Leatherback_step3.RData")
 LeatherbackSky <- skylineplot
 LeatherbackTest <- test_constant_model
 LeatherbackPGSM <- list(pGSM_hat=pGSM_hat,pGSM_95HPD=pGSM_95HPD)
+LeatherbackMutPrior <- mut_params
+LeatherbackMutPost  <- abcresult$adj.values
 
-load("/home/miguel/Work/Research/ABC_Skyline_plot/Real_datasets/Colobus2/Colobus_BWC_SMM/Colobus_BWC_SMM_results.RData")
+load("/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot/results/BWC_SSMandGSM_results.RData")
 BlackNWhiteColobusSky <- skylineplot
-BlackNWhiteColobusTest <- test_constant_model
+BlackNWhiteColobusTest <- BF
+load("/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot/results/BWC_PGSM_results.RData")
 BlackNWhiteColobusPGSM <- list(pGSM_hat=pGSM_hat,pGSM_95HPD=pGSM_95HPD)
+BlackNWhiteColobusMutPrior <- prior
+BlackNWhiteColobusMutPost  <- posterior
 
-load("/home/miguel/Work/Research/ABC_Skyline_plot/Real_datasets/Colobus2/Colobus_RC_SMM/Colobus_RC_SMM_results.RData")
+load("/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot/results/RC_SSMandGSM_results.RData")
 RedColobusSky <- skylineplot
-RedColobusTest <- test_constant_model
+RedColobusTest <- BF
+load("/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot/results/RC_PGSM_results.RData")
 RedColobusPGSM <- list(pGSM_hat=pGSM_hat,pGSM_95HPD=pGSM_95HPD)
+RedColobusMutPrior <- prior
+RedColobusMutPost  <- posterior
 
 
 require(gplots)
 
+pdf(file="results/RealDataPGSM.pdf", width=8, height=8)
+par(cex.axis=1,cex.lab=1.2,mar=c(3,3,2,2), oma=c(3.5,3.5,0,0),mfcol=c(2,2))
+
+label_x     <- expression(P[GSM])#c(expression(P[GSM]),expression(log[10](P[GSM])))
+label_y     <- "probability density"
+
+
+hist(WhaleSharkMutPrior,
+     breaks=40,
+     col="grey",
+     freq=F,
+     ylim=c(0,10),
+     main="",xlab="",ylab="")
+hist(WhaleSharkMutPost,
+     breaks=20,
+     col=rgb(1,0,0,0.5),
+     freq=F,
+     add=T)
+legend(x="topright",
+       legend=c("whale shark"),
+       cex=1.2,bty="n")
+legend(x="topleft",
+       fill=c("grey",rgb(1,0,0,0.5)),
+       legend=c("prior","posterior"),
+       cex=1.2,bty="n")
+box()
+
+
+hist(LeatherbackMutPrior,
+     breaks=40,
+     col="grey",
+     freq=F,
+     ylim=c(0,10),
+     main="",xlab="",ylab="")
+hist(LeatherbackMutPost,
+     breaks=20,
+     col=rgb(1,0,0,0.5),
+     freq=F,
+     add=T)
+legend(x="topright",
+       legend=c("leatherback turtle"),
+       cex=1.2,bty="n")
+box()
+
+
+hist(BlackNWhiteColobusMutPrior,
+     breaks=40,
+     col="grey",
+     freq=F,
+     ylim=c(0,10),
+     main="",xlab="",ylab="")
+hist(BlackNWhiteColobusMutPost,
+     breaks=40,
+     col=rgb(1,0,0,0.5),
+     freq=F,
+     add=T)
+legend(x="topright",
+       legend=c("black-and-white colobus"),
+       cex=1.2,bty="n")
+box()
+
+hist(RedColobusMutPrior,
+     breaks=40,
+     col="grey",
+     freq=F,
+     ylim=c(0,10),
+     main="",xlab="",ylab="")
+hist(RedColobusMutPost,
+     breaks=40,
+     col=rgb(1,0,0,0.5),
+     freq=F,
+     add=T)
+box()
+legend(x="topright",
+       legend=c("red colobus"),
+       cex=1.2,bty="n")
+
+mtext(label_x, side=1, adj=0.5, cex=1.2, outer=TRUE)
+mtext(label_y, side=2, adj=0.5, cex=1.2, outer=TRUE)
+
+
+dev.off ( which=dev.cur() )
 
 
 
-pdf(file="RealDataSkylinePlot.pdf", width=8, height=8)
+
+
+
+
+pdf(file="results/RealDataSkylinePlot.pdf", width=8, height=8)
 par(cex.axis=1,cex.lab=1.2,mar=c(3,3,2,2), oma=c(3.5,3.5,0,0),mfcol=c(2,2))
 
 limits_on_y <- c(-2.5,3.5)
 limits_on_x <- c(0,4)
-label_x     <- "t (mutations/locus)"
+label_x     <- expression(tau~"(mutations/locus)")
 label_y     <- expression("log"[10]*theta)
   
 plot(WhaleSharkSky[,1],
@@ -52,9 +153,13 @@ D      <- 0.00902
 tau    <- theta0*D
 lines( c(0,tau, 10),
        log10(c(theta0,thetaA,thetaA) ),
-       col="blue",type="l",lty=5,lwd=2)
-  
-legend(x="topright",legend="whale shark",cex=1.2,bty="n")
+       col=cbbPalette[2],type="l",lty=5,lwd=2)
+
+BF <- round(WhaleSharkTest$posterior[2]/WhaleSharkTest$posterior[1],digits = 2)
+legend(x="topright",
+       legend=c("whale shark",
+                paste0("BF=",BF)),
+       cex=1.2,bty="n")
   
 box()
   
@@ -79,10 +184,13 @@ D      <- 1.073
 tau    <- theta0*D
 lines( c(0,tau, 10),
        log10(c(theta0,thetaA,thetaA) ),
-       col="blue",type="l",lty=5,lwd=2)
+       col=cbbPalette[2],type="l",lty=5,lwd=2)
 
-
-legend(x="topright",legend="leatherback turtle",cex=1.2,bty="n")
+BF <- round(LeatherbackTest$posterior[2]/LeatherbackTest$posterior[1],digits = 2)
+legend(x="topright",
+       legend=c("leatherback turtle",
+                paste0("BF=",BF)),
+       cex=1.2,bty="n")
 
 box()
 
@@ -101,9 +209,15 @@ lines(BlackNWhiteColobusSky[,1],
       log10(BlackNWhiteColobusSky[,4]),col="grey",type="l",lty=1,lwd=2)
 
 theta <- 1.399
-abline(h=theta,col="blue",lty=5,lwd=2)
+abline(h=log10(theta),col=cbbPalette[2],lty=5,lwd=2)
 
-legend(x="topright",legend="black-and-white colobus",cex=1.2,bty="n")
+BF <- round(BlackNWhiteColobusTest,digits = 2)
+legend(x="topright",
+       legend=c("black-and-white colobus",
+                paste0("BF=",BF)),
+       cex=1.2,bty="n")
+
+
 
 box()
 
@@ -128,9 +242,14 @@ D      <- 0.256
 tau    <- theta0*D
 lines( c(0,tau, 10),
        log10(c(theta0,thetaA,thetaA) ),
-       col="blue",type="l",lty=5,lwd=2)
+       col=cbbPalette[2],type="l",lty=5,lwd=2)
 
-legend(x="topright",legend="red colobus",cex=1.2,bty="n")
+BF <- round(RedColobusTest,digits = 2)
+legend(x="topright",
+       legend=c("red colobus",
+                paste0("BF=",BF)),
+       cex=1.2,bty="n")
+
 
 box()
 

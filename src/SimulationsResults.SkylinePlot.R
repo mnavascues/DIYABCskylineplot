@@ -5,7 +5,7 @@
 
 pgsm_values <- c(0.00,0.22,0.74)
 options(scipen = 999)
-project <- "ratioNeLU"
+project <- "Poisson"
 number_of_replicates <- 100
 scenarios_number <- 1:27
 scenarios <- paste("Scenario", scenarios_number, sep="")
@@ -13,6 +13,10 @@ scenarios <- paste("Scenario", scenarios_number, sep="")
 scen_table <- read.table("src/Scenari/scenari.table.txt",header=T,row.names=1)
 mkdir_command <- paste0("mkdir results/",project,"/Results/SkylinePlot")
 system( mkdir_command )
+
+cbbPalette <- c("#000000", "#009E73", "#e79f00", "#9ad0f3", "#0072B2", "#D55E00", 
+                "#CC79A7", "#F0E442")
+
 
 #MAIN FIGURE
 
@@ -27,26 +31,27 @@ for (scen in c(8,20,26) ){
   SKYlower  <- t(skylineplot$lower_95HPD)
   SKYupper  <- t(skylineplot$upper_95HPD)
   
-  label_x     <- "t (mutations/locus)"
-  label_y     <- expression("log"[10]*theta)
+  label_x     <- expression(tau~"(mutations/locus)")
+  label_y     <- expression(theta)
   
   plot( generations,
-        log10(SKYmedian[,1]),
+        SKYmedian[,1],
         type="n",
         xlab="",
         ylab="",
-        xlim=c(0,4),
-        ylim=c(-3,4), #ylim=c(-3,4),
-        cex.axis=1.2)
+        xlim=c(2.5e-4,4),
+        ylim=c(1e-3,1e4), #ylim=c(-3,4),
+        cex.axis=1.2,
+        log="xy")
   
   for (i in 1:number_of_replicates){
-    lines(generations,log10(SKYlower[,i]),col=rgb(0.9,0.9,0.9,0.1))
-    lines(generations,log10(SKYupper[,i]),col=rgb(0.6,0.6,0.6,0.1))
+    lines(generations,SKYlower[,i],col=rgb(0.9,0.9,0.9,0.5))
+    lines(generations,SKYupper[,i],col=rgb(0.6,0.6,0.6,0.5))
   }
   for (i in 1:number_of_replicates){
-    lines(generations,log10(SKYmedian[,i]),col=rgb(0,0,0,0.1))
+    lines(generations,SKYmedian[,i],col=rgb(0,0,0,0.5))
   }
-  lines(generations,log10(SKYtrue),col="red")
+  lines(generations,SKYtrue,col=cbbPalette[3])
   
   if (scen==26){
     mtext(label_x, side=1, adj=0.5, cex=1, outer=TRUE)
@@ -79,26 +84,27 @@ for (pgsm in seq_along(pgsm_values)){
     SKYlower  <- t(skylineplot$lower_95HPD)
     SKYupper  <- t(skylineplot$upper_95HPD)
     
-    label_x     <- "t (mutations/locus)"
-    label_y     <- expression("log"[10]*theta)
+    label_x     <- expression(tau~"(mutations/locus)")
+    label_y     <- expression(theta)
     
     plot( generations,
-          log10(SKYmedian[,1]),
+          SKYmedian[,1],
           type="n",
           xlab="",
           ylab="",
-          xlim=c(0,4),
-          ylim=c(-3,4),
-          cex.axis=1.2)
+          xlim=c(2.5e-4,4),
+          ylim=c(1e-3,1e4), #ylim=c(-3,4),
+          cex.axis=1.2,
+          log="xy")
     
     for (i in 1:number_of_replicates){
-      lines(generations,log10(SKYlower[,i]),col=rgb(0.9,0.9,0.9,0.1))
-      lines(generations,log10(SKYupper[,i]),col=rgb(0.6,0.6,0.6,0.1))
+      lines(generations,SKYlower[,i],col=rgb(0.9,0.9,0.9,0.5))
+      lines(generations,SKYupper[,i],col=rgb(0.6,0.6,0.6,0.5))
     }
     for (i in 1:number_of_replicates){
-      lines(generations,log10(SKYmedian[,i]),col=rgb(0,0,0,0.1))
+      lines(generations,SKYmedian[,i],col=rgb(0,0,0,0.5))
     }
-    lines(generations,log10(SKYtrue),col="red")
+    lines(generations,SKYtrue,col=cbbPalette[3])
     
     if (scen==12){
       mtext(label_x, side=1, adj=0.5, cex=1.5, outer=TRUE)
@@ -126,26 +132,27 @@ for (pgsm in seq_along(pgsm_values)){
     SKYlower  <- t(skylineplot$lower_95HPD)
     SKYupper  <- t(skylineplot$upper_95HPD)
     
-    label_x     <- "t (mutations/locus)"
-    label_y     <- expression("log"[10]*theta)
+    label_x     <- expression(tau~"(mutations/locus)")
+    label_y     <- expression(theta)
     
     plot( generations,
-          log10(SKYmedian[,1]),
+          SKYmedian[,1],
           type="n",
           xlab="",
           ylab="",
-          xlim=c(0,4),
-          ylim=c(-3,4),
-          cex.axis=1.2)
+          xlim=c(2.5e-4,4),
+          ylim=c(1e-3,1e4), #ylim=c(-3,4),
+          cex.axis=1.2,
+          log="xy")
     
     for (i in 1:number_of_replicates){
-      lines(generations,log10(SKYlower[,i]),col=rgb(0.9,0.9,0.9,0.1))
-      lines(generations,log10(SKYupper[,i]),col=rgb(0.6,0.6,0.6,0.1))
+      lines(generations,SKYlower[,i],col=rgb(0.9,0.9,0.9,0.5))
+      lines(generations,SKYupper[,i],col=rgb(0.6,0.6,0.6,0.5))
     }
     for (i in 1:number_of_replicates){
-      lines(generations,log10(SKYmedian[,i]),col=rgb(0,0,0,0.1))
+      lines(generations,SKYmedian[,i],col=rgb(0,0,0,0.5))
     }
-    lines(generations,log10(SKYtrue),col="red")
+    lines(generations,SKYtrue,col=cbbPalette[3])
     
     if (scen==24){
       mtext(label_x, side=1, adj=0.5, cex=1.5, outer=TRUE)
@@ -175,26 +182,27 @@ for (pgsm in seq_along(pgsm_values)){
     SKYlower  <- t(skylineplot$lower_95HPD)
     SKYupper  <- t(skylineplot$upper_95HPD)
     
-    label_x     <- "t (mutations/locus)"
-    label_y     <- expression("log"[10]*theta)
+    label_x     <- expression(tau~"(mutations/locus)")
+    label_y     <- expression(theta)
     
     plot( generations,
-          log10(SKYmedian[,1]),
+          SKYmedian[,1],
           type="n",
           xlab="",
           ylab="",
-          xlim=c(0,4),
-          ylim=c(-3,4),
-          cex.axis=1.2)
+          xlim=c(2.5e-4,4),
+          ylim=c(1e-3,1e4), #ylim=c(-3,4),
+          cex.axis=1.2,
+          log="xy")
     
     for (i in 1:number_of_replicates){
-      lines(generations,log10(SKYlower[,i]),col=rgb(0.9,0.9,0.9,0.1))
-      lines(generations,log10(SKYupper[,i]),col=rgb(0.6,0.6,0.6,0.1))
+      lines(generations,SKYlower[,i],col=rgb(0.9,0.9,0.9,0.5))
+      lines(generations,SKYupper[,i],col=rgb(0.6,0.6,0.6,0.5))
     }
     for (i in 1:number_of_replicates){
-      lines(generations,log10(SKYmedian[,i]),col=rgb(0,0,0,0.1))
+      lines(generations,SKYmedian[,i],col=rgb(0,0,0,0.5))
     }
-    lines(generations,log10(SKYtrue),col="red")
+    lines(generations,SKYtrue,col=cbbPalette[3])
     
     
     if (scen==27){

@@ -5,7 +5,7 @@
 
 pgsm_values <- c(0.00,0.22,0.74)
 options(scipen = 999)
-project <- "ratioNeLU"
+project <- "Poisson"
 number_of_replicates <- 100
 scenarios_number <- 1:27
 scenarios <- paste("Scenario", scenarios_number, sep="")
@@ -27,8 +27,8 @@ scen_table <- cbind(scen_table,
                     A_m,A_sd,
                     M_m,M_sd,
                     V_m,V_sd,
-                    B_m,B_sd,
-                    Bp_m,Bp_sd,
+                    #B_m,B_sd,
+                    #Bp_m,Bp_sd,
                     Bo_m,Bo_sd)
 
 # transform parameters to theta and tau
@@ -40,8 +40,9 @@ for (pgsm in seq_along(pgsm_values)){
 
   for (scen in 1:27){
     sumstats <- read.table(paste0("results/",project,"/Simulations/P",pgsm_values[pgsm],"/Scenario",scen,"/Scenario",scen,".sumstats"),header=T)
-    scen_table[scen,c("A_m","He_m","V_m","M_m","B_m","Bp_m","Bo_m")] <- apply(sumstats,2,function(x) round(mean(x),digits=2) )
-    scen_table[scen,c("A_sd","He_sd","V_sd","M_sd","B_sd","Bp_sd","Bo_sd")] <- apply(sumstats,2,function(x) round(sd(x),digits=2))
+    sumstats <- sumstats[,c(1:4,7)]
+    scen_table[scen,c("A_m","He_m","V_m","M_m","Bo_m")] <- apply(sumstats,2,function(x) round(mean(x),digits=2) )
+    scen_table[scen,c("A_sd","He_sd","V_sd","M_sd","Bo_sd")] <- apply(sumstats,2,function(x) round(sd(x),digits=2))
   }
   write.table(scen_table,file=paste0("results/",project,"/Results/SumStats/SummaryStatistics_",pgsm_values[pgsm],".txt"))
   
@@ -58,11 +59,7 @@ for (pgsm in seq_along(pgsm_values)){
                     scen_table[scen,10],  " & (",
                     scen_table[scen,11],  ") & ",
                     scen_table[scen,12],  " & (",
-                    scen_table[scen,13],  ") & ",
-                    scen_table[scen,14],  " & (",
-                    scen_table[scen,15],  ") & ",
-                    scen_table[scen,16], " & (",
-                    scen_table[scen,17], ") \\\\")
+                    scen_table[scen,13],  ") \\\\")
     if (scen==1) first_line <- T
     write(latex,file=paste0("results/",project,"/Results/SumStats/SummaryStatistics_",pgsm_values[pgsm],"_LaTeX.txt"),append=!first_line)
     first_line <- F

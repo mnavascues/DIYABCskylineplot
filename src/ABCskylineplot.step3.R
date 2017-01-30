@@ -16,10 +16,11 @@ sims2keep <- seq_len(nrow(stats)) #which(stats$NAL_1_1!=1.0)
 
 
 G <- paste("G",1:num_of_points,sep="")
-Tmax <- prior_TAU_max    
+Tmax <- prior_TAU_max
+Tmin <- prior_TAU_min
 
 if (prior_TAU=="LU"){
-  generations <- 10^seq(from=log10(0+0.1),to=log10(Tmax+0.1),length.out=num_of_points)-0.1
+  generations <- 10^seq(from=log10(Tmin),to=log10(Tmax),length.out=num_of_points)
 }else{
   generations <- seq(from=0, to=Tmax, length.out=num_of_points)
 }
@@ -175,7 +176,7 @@ if (simulated_target_data) {
       par(cex.axis=2.5,cex.lab=2.5,mar=c(5.5,5.5,2,2))
       
       #generations <- seq(from=0, to=Tmax, length.out=num_of_points)
-      limits_on_x <- c(0,max(generations))
+      limits_on_x <- c(Tmin,Tmax)
       label_x     <- "t (mutations/locus)"
       label_y     <- expression("relative absolute error and relative bias on "*theta)
       

@@ -152,7 +152,7 @@ for (period in min_num_of_periods:max_num_of_periods){
   if (period>1){
     if (period==max_num_of_periods) params_header <- c("PERIODS","THETA0")
     for (i in 1:(period-1) ) {
-      write(paste("t",i," T ",prior_TAU,"[1,",prior_TAU_max/MUTRATE,",0,0]",sep=""), file=header_file_name, append=T)
+      write(paste("t",i," T ",prior_TAU,"[",prior_TAU_min/MUTRATE,",",prior_TAU_max/MUTRATE,",0,0]",sep=""), file=header_file_name, append=T)
       write(paste("N",i," N ",prior_THETA,"[",prior_THETA_min/(4*MUTRATE),",",prior_THETA_max/(4*MUTRATE),",0,0]",sep=""), file=header_file_name, append=T)
       if (period==max_num_of_periods) params_header <- c(params_header,paste0("TAU",i),paste0("THETA",i))
     }

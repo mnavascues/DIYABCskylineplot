@@ -5,7 +5,7 @@
 
 pgsm_values <- c(0.00,0.22,0.74)
 options(scipen = 999)
-project <- "PoissonLU"
+project <- "ratioNe"
 number_of_replicates <- 100
 scenarios_number <- 1:27
 scenarios <- paste("Scenario", scenarios_number, sep="")
@@ -31,7 +31,7 @@ for (pgsm in seq_along(pgsm_values)){
 
 # MAIN FIGURE
 
-load(paste0("results/",project,"/Results/BayesFactor/BayesFactor_0.22.RData"))
+load(paste0("results/",project,"/Results/BayesFactor/BayesFactor_0.RData"))
 
 pdf(file=paste0("results/",project,"/Results/BayesFactor/BayesFactor_main.pdf"),width=5,height=4)
 plot.new()
