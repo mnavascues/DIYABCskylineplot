@@ -41,8 +41,15 @@ for (scen in c(8,20,26) ){
         ylab="",
         xlim=c(2.5e-4,4),
         ylim=c(1e-3,1e4), #ylim=c(-3,4),
-        cex.axis=1.2,
+        cex.axis=0.00001,
         log="xy")
+  axis(1,
+       at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
+       labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+  axis(2,
+       at     = c(0.001,0.1,10,1000) ,
+       labels = c("0.001","0.1","10","1000") , las=1, tick=F)
+  
   
   for (i in 1:number_of_replicates){
     lines(generations,SKYlower[,i],col=rgb(0.9,0.9,0.9,0.5))
