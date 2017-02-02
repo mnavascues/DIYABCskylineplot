@@ -106,7 +106,7 @@ prior_SNI_i_shape <- 0 # set shape to 0 if you want all individual loci to take 
 #--------------------------------------
 
 # Set working directory
-directory <- "/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot"
+directory <- getwd()
 
 # Set project name (affects subdirectory and output files names)
 project   <- "Poisson"
@@ -126,7 +126,7 @@ maxPCA <- 7
 g_out <- "pdf"
 
 # specify whether target data will be simulated or will be read from files
-simulated_target_data <- T
+simulated_target_data <- F
  # Microsatellite data info
 motif <- 1 # a single value if all loci have the same repeat length
            # or a factor with each motif length in the same order as in
