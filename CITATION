@@ -1,12 +1,10 @@
 Please cite this work as:
 
+Method:
 
-Description of the method:
+Navascués, M., R. Leblois, C. Burgarella. 2017. Demographic inference through approximate-Bayesian-computation skyline plots. bioRxiv. doi:10.1101/112060
 
-Burgarella, C., M. Navascués, M. Zabal-Aguirre, E. Berganzo, M. Riba, M. Mayol, G. G. Vendramin, and S. C. González-Martínez. 2012. Recent population decline and selection shape diversity of taxol-related genes. Molecular Ecology 21:3006–3021.
-doi:10.1111/j.1365-294X.2012.05532.x
-
-http://doi.org/10.1111/j.1365-294X.2012.05532.x
+http://doi.org/10.1101/112060
 
 
 Code:
@@ -16,7 +14,5 @@ DOI: 10.5281/zenodo.267182
 
 http://doi.org/10.5281/zenodo.267182
 
+Note that DIYABCskylineplot uses DIYABC, fastSIMCOAL and abc R packge that should be also cited appropiatedly
 
-
-
-An article specific about the method is in preparation and will substitute the reference for citation soon.

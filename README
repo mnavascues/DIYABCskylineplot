@@ -17,7 +17,7 @@ The code is composed by a suite of scripts in R (http://www.r-project.org/). The
 *hexbin*   for hexbin plots of summary statistic PCA
 *batch*    for running R script from command line with arguments
 
-In addition to R it **requires** the command line executable of [DIYABC](http://www1.montpellier.inra.fr/CBGP/diyabc/). It also requires [fastsimcoal](http://cmpg.unibe.ch/software/fastsimcoal/) for analysing pseudo observed data (simulated data for the evaluation of the method, not necessary for the analysis of empirical data). These should be placed in a /bin folder within the project folder
+In addition to R it **requires** the command line executable of [DIYABC](http://www1.montpellier.inra.fr/CBGP/diyabc/). It also requires [fastsimcoal](http://cmpg.unibe.ch/software/fastsimcoal/) for analysing pseudo observed data (simulated data for the evaluation of the method, not necessary for the analysis of empirical data). These should be placed in a /bin folder within the project folder (DIYABC executable can be placed elsewhere, but its location must be then specifiec when running DIYABCskylineplot)
 
 ## USAGE
 
