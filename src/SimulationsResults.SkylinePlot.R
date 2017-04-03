@@ -5,7 +5,7 @@
 
 pgsm_values <- c(0.00,0.22,0.74)
 options(scipen = 999)
-project <- "Poisson"
+project <- "ratioNe"
 number_of_replicates <- 100
 scenarios_number <- 1:27
 scenarios <- paste("Scenario", scenarios_number, sep="")
@@ -31,8 +31,8 @@ for (scen in c(8,20,26) ){
   SKYlower  <- t(skylineplot$lower_95HPD)
   SKYupper  <- t(skylineplot$upper_95HPD)
   
-  label_x     <- expression(tau~"(mutations/locus)")
-  label_y     <- expression(theta)
+  label_x     <- expression(tau~"(time measured in mutations)")
+  label_y     <- expression(theta*"="*4*N[e]*mu)
   
   plot( generations,
         SKYmedian[,1],
@@ -52,13 +52,13 @@ for (scen in c(8,20,26) ){
   
   
   for (i in 1:number_of_replicates){
-    lines(generations,SKYlower[,i],col=rgb(0.9,0.9,0.9,0.5))
+    lines(generations,SKYlower[,i],col=rgb(0.6,0.6,0.6,0.5))
     lines(generations,SKYupper[,i],col=rgb(0.6,0.6,0.6,0.5))
   }
   for (i in 1:number_of_replicates){
     lines(generations,SKYmedian[,i],col=rgb(0,0,0,0.5))
   }
-  lines(generations,SKYtrue,col=cbbPalette[3])
+  lines(generations,SKYtrue,col=cbbPalette[3],lwd=2)
   
   if (scen==26){
     mtext(label_x, side=1, adj=0.5, cex=1, outer=TRUE)
@@ -91,8 +91,8 @@ for (pgsm in seq_along(pgsm_values)){
     SKYlower  <- t(skylineplot$lower_95HPD)
     SKYupper  <- t(skylineplot$upper_95HPD)
     
-    label_x     <- expression(tau~"(mutations/locus)")
-    label_y     <- expression(theta)
+    label_x     <- expression(tau~"(time measured in mutations)")
+    label_y     <- expression(theta*"="*4*N[e]*mu)
     
     plot( generations,
           SKYmedian[,1],
@@ -101,17 +101,23 @@ for (pgsm in seq_along(pgsm_values)){
           ylab="",
           xlim=c(2.5e-4,4),
           ylim=c(1e-3,1e4), #ylim=c(-3,4),
-          cex.axis=1.2,
+          cex.axis=0.00001,
           log="xy")
+    axis(1,
+         at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
+         labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+    axis(2,
+         at     = c(0.001,0.1,10,1000) ,
+         labels = c("0.001","0.1","10","1000") , las=1, tick=F)
     
     for (i in 1:number_of_replicates){
-      lines(generations,SKYlower[,i],col=rgb(0.9,0.9,0.9,0.5))
+      lines(generations,SKYlower[,i],col=rgb(0.6,0.6,0.6,0.5))
       lines(generations,SKYupper[,i],col=rgb(0.6,0.6,0.6,0.5))
     }
     for (i in 1:number_of_replicates){
       lines(generations,SKYmedian[,i],col=rgb(0,0,0,0.5))
     }
-    lines(generations,SKYtrue,col=cbbPalette[3])
+    lines(generations,SKYtrue,col=cbbPalette[3],lwd=2)
     
     if (scen==12){
       mtext(label_x, side=1, adj=0.5, cex=1.5, outer=TRUE)
@@ -139,8 +145,8 @@ for (pgsm in seq_along(pgsm_values)){
     SKYlower  <- t(skylineplot$lower_95HPD)
     SKYupper  <- t(skylineplot$upper_95HPD)
     
-    label_x     <- expression(tau~"(mutations/locus)")
-    label_y     <- expression(theta)
+    label_x     <- expression(tau~"(time measured in mutations)")
+    label_y     <- expression(theta*"="*4*N[e]*mu)
     
     plot( generations,
           SKYmedian[,1],
@@ -149,17 +155,23 @@ for (pgsm in seq_along(pgsm_values)){
           ylab="",
           xlim=c(2.5e-4,4),
           ylim=c(1e-3,1e4), #ylim=c(-3,4),
-          cex.axis=1.2,
+          cex.axis=0.00001,
           log="xy")
+    axis(1,
+         at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
+         labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+    axis(2,
+         at     = c(0.001,0.1,10,1000) ,
+         labels = c("0.001","0.1","10","1000") , las=1, tick=F)
     
     for (i in 1:number_of_replicates){
-      lines(generations,SKYlower[,i],col=rgb(0.9,0.9,0.9,0.5))
+      lines(generations,SKYlower[,i],col=rgb(0.6,0.6,0.6,0.5))
       lines(generations,SKYupper[,i],col=rgb(0.6,0.6,0.6,0.5))
     }
     for (i in 1:number_of_replicates){
       lines(generations,SKYmedian[,i],col=rgb(0,0,0,0.5))
     }
-    lines(generations,SKYtrue,col=cbbPalette[3])
+    lines(generations,SKYtrue,col=cbbPalette[3],lwd=2)
     
     if (scen==24){
       mtext(label_x, side=1, adj=0.5, cex=1.5, outer=TRUE)
@@ -189,8 +201,8 @@ for (pgsm in seq_along(pgsm_values)){
     SKYlower  <- t(skylineplot$lower_95HPD)
     SKYupper  <- t(skylineplot$upper_95HPD)
     
-    label_x     <- expression(tau~"(mutations/locus)")
-    label_y     <- expression(theta)
+    label_x     <- expression(tau~"(time measured in mutations)")
+    label_y     <- expression(theta*"="*4*N[e]*mu)
     
     plot( generations,
           SKYmedian[,1],
@@ -199,17 +211,23 @@ for (pgsm in seq_along(pgsm_values)){
           ylab="",
           xlim=c(2.5e-4,4),
           ylim=c(1e-3,1e4), #ylim=c(-3,4),
-          cex.axis=1.2,
+          cex.axis=0.00001,
           log="xy")
+    axis(1,
+         at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
+         labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+    axis(2,
+         at     = c(0.001,0.1,10,1000) ,
+         labels = c("0.001","0.1","10","1000") , las=1, tick=F)
     
     for (i in 1:number_of_replicates){
-      lines(generations,SKYlower[,i],col=rgb(0.9,0.9,0.9,0.5))
+      lines(generations,SKYlower[,i],col=rgb(0.6,0.6,0.6,0.5))
       lines(generations,SKYupper[,i],col=rgb(0.6,0.6,0.6,0.5))
     }
     for (i in 1:number_of_replicates){
       lines(generations,SKYmedian[,i],col=rgb(0,0,0,0.5))
     }
-    lines(generations,SKYtrue,col=cbbPalette[3])
+    lines(generations,SKYtrue,col=cbbPalette[3],lwd=2)
     
     
     if (scen==27){

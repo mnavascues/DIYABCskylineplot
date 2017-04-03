@@ -1,13 +1,22 @@
 Please cite this work as:
 
+
+Description of the method:
+
 Burgarella, C., M. Navascués, M. Zabal-Aguirre, E. Berganzo, M. Riba, M. Mayol, G. G. Vendramin, and S. C. González-Martínez. 2012. Recent population decline and selection shape diversity of taxol-related genes. Molecular Ecology 21:3006–3021.
 doi:10.1111/j.1365-294X.2012.05532.x
 
 http://doi.org/10.1111/j.1365-294X.2012.05532.x
 
+
+Code:
+
 Navascués, M. 2017 DIYABCskylineplot v1.0.1: A suite of R scripts to perform a Approximate Bayesian Computation Skyline Plot
 DOI: 10.5281/zenodo.267182 
 
 http://doi.org/10.5281/zenodo.267182
+
+
+
 
 An article specific about the method is in preparation and will substitute the reference for citation soon.

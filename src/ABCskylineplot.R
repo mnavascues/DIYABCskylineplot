@@ -69,7 +69,7 @@ MUTRATE          <- prior_THETA_min/4
 # prior on time of population size changes
 prior_TAU            <- "LU"    # "LU" for log-uniform, "UN" for uniform
 prior_TAU_min        <- MUTRATE # maximum time (measured in number of mutations)
-prior_TAU_max        <- 25      # maximum time (measured in number of mutations)
+prior_TAU_max        <- 4      # maximum time (measured in number of mutations)
 
 # prior on mutational model
 prior_MUTRATE         <- "UN"   # "LU" for log-uniform, "UN" for uniform, "GA" for gamma
@@ -139,7 +139,6 @@ if (!simulated_target_data){ #specify files for target data
   if (!exists("inputfile")) inputfile <- "test.gen" #place it in data folder
 }else{ #specify scenarios for simulating target data
   scenarios_number <- 1:27 #
-  scenarios <- paste("Scenario", scenarios_number, sep="")
 
   inputfile <- "simulated_data_genepop.gen"
   

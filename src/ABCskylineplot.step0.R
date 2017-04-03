@@ -32,7 +32,8 @@ if (!simulated_target_data){
   
   
 }else{ # i.e. simulated_target_data=T
-
+  scenarios <- paste("Scenario", scenarios_number, sep="")
+  
   sims_exist <- file.exists(paste0("results/",project,"/Simulations"))
   
   if (!sims_exist){

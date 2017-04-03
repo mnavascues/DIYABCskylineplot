@@ -5,7 +5,7 @@
 
 pgsm_values <- c(0.00,0.22,0.74)
 options(scipen = 999)
-project <- "ratioNe"
+project <- "Poisson"
 number_of_replicates <- 100
 scenarios_number <- 1:27
 scenarios <- paste("Scenario", scenarios_number, sep="")
@@ -31,7 +31,7 @@ for (pgsm in seq_along(pgsm_values)){
 
 # MAIN FIGURE
 
-load(paste0("results/",project,"/Results/BayesFactor/BayesFactor_0.RData"))
+load(paste0("results/",project,"/Results/BayesFactor/BayesFactor_0.22.RData"))
 
 pdf(file=paste0("results/",project,"/Results/BayesFactor/BayesFactor_main.pdf"),width=5,height=4)
 plot.new()
@@ -141,12 +141,21 @@ for (pgsm in seq_along(pgsm_values)){
   axis(1, at=1:12 , labels= c(scen_table[1:12,"Ta"])*1e-3 , line=1, las=1, tick=F, cex.axis=1)
   mtext(expression(theta[0]), side=1, line=1, font=2, cex=1,at=0)
   mtext(expression(tau), side=1, line=2, font=2, cex=1,at=0)
+  
+  if(pgsm==2){
+    arrows(12,300,12,1000,lwd=3,length=0.12)
+  }
+  if(pgsm==3){
+    arrows(8,300,8,1000,lwd=3,length=0.12)
+    arrows(9,300,9,1000,lwd=3,length=0.12)
+    arrows(11,300,11,1000,lwd=3,length=0.12)
+    arrows(12,300,12,1000,lwd=3,length=0.12)
+  }
+  
+  
   dev.off()
   
-  
-  
-  
-  
+
   pdf(file=paste0("results/",project,"/Results/BayesFactor/BayesFactorConstantSize_",pgsm_values[pgsm],".pdf"),width=5,height=8)
   plot.new()
   plot.window(xlim=c(0,5), xaxs="i",
