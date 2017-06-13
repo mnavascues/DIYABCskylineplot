@@ -47,40 +47,70 @@ library(abc);library(adegenet);library(graphics);library(gplots);library(hexbin)
 
 # ON ABC SIMULATIONS
 #--------------------
-num_of_sims              <- 1000000      # Number of simulations
-proportion_of_sims_kept  <- 0.001       # Tolerance level for ABC
+num_of_sims              <- 100000#0      # Number of simulations
+proportion_of_sims_kept  <- 0.01       # Tolerance level for ABC
 seed                     <- 6132       # For random number generation (in R, DIYABC & fastsimcoal)
 
 # ON DEMOGRAPHIC & MUTATIONAL MODEL
 #----------------------------------
 num_of_points      <- 30    # number of points to draw skyline plot
 
+num_of_time_samples <- 4
+
 # prior on number of periods
-prior_PERIODS      <- "Poisson" # "Poisson" or "constant" (num_of_periods = max_num_of_periods)
-Poisson_lambda     <- log(2)    # log(2) for 50% constant - 50% non-constant demography 
-max_num_of_periods <- 10        # max number of periods to simulate
+prior_PERIODS      <- "constant" # "Poisson" or "constant" (num_of_periods = max_num_of_periods)
+Poisson_lambda     <- log(2)     # log(2) for 50% constant - 50% non-constant demography 
+max_num_of_periods <- 2          # max number of periods to simulate
 
-# prior on theta
-prior_THETA      <- "LU"    # "LU" for log-uniform, "UN" for uniform
-prior_THETA_min  <- 1E-3    # minumum theta=4Nu (MUST: prior_THETA_min>=4*MUTRATE)
-prior_THETA_max  <- 1E4     # maximum theta=4Nu
-MUTRATE          <- prior_THETA_min/4
+prior_on_theta <- F
 
-# prior on time of population size changes
-prior_TAU            <- "LU"    # "LU" for log-uniform, "UN" for uniform
-prior_TAU_min        <- MUTRATE # maximum time (measured in number of mutations)
-prior_TAU_max        <- 4      # maximum time (measured in number of mutations)
+if (prior_on_theta){
+  # prior on theta
+  prior_THETA      <- "LU"    # "LU" for log-uniform, "UN" for uniform
+  prior_THETA_min  <- 1E-3    # minumum theta=4Nu (MUST: prior_THETA_min>=4*MUTRATE)
+  prior_THETA_max  <- 1E4     # maximum theta=4Nu
+  MUTRATE          <- prior_THETA_min/4
+  
+  # prior on time of population size changes
+  prior_TAU            <- "LU"    # "LU" for log-uniform, "UN" for uniform
+  prior_TAU_min        <- MUTRATE # maximum time (measured in number of mutations)
+  prior_TAU_max        <- 4      # maximum time (measured in number of mutations)
 
-# prior on mutational model
-prior_MUTRATE         <- "UN"   # "LU" for log-uniform, "UN" for uniform, "GA" for gamma
-prior_MUTRATE_min     <- MUTRATE
-prior_MUTRATE_max     <- MUTRATE
-prior_MUTRATE_mean    <- 0
-prior_MUTRATE_shape   <- 0
-prior_MUTRATE_i_min   <- prior_MUTRATE_min
-prior_MUTRATE_i_max   <- prior_MUTRATE_max
-prior_MUTRATE_i_mean  <- "Mean_u"
-prior_MUTRATE_i_shape <- 0 # set shape to 0 if you want all individual loci to take the same value (= mean)
+  # prior on mutational model
+  prior_MUTRATE         <- "UN"   # "LU" for log-uniform, "UN" for uniform, "GA" for gamma
+  prior_MUTRATE_min     <- MUTRATE
+  prior_MUTRATE_max     <- MUTRATE
+  prior_MUTRATE_mean    <- 0
+  prior_MUTRATE_shape   <- 0
+  prior_MUTRATE_i_min   <- prior_MUTRATE_min
+  prior_MUTRATE_i_max   <- prior_MUTRATE_max
+  prior_MUTRATE_i_mean  <- "Mean_u"
+  prior_MUTRATE_i_shape <- 0 # set shape to 0 if you want all individual loci to take the same value (= mean)
+}else{
+  # prior on Ne
+  prior_N      <- "LU"    # "LU" for log-uniform, "UN" for uniform
+  prior_N_min  <- 1    # minumum theta=4Nu (MUST: prior_THETA_min>=4*MUTRATE)
+  prior_N_max  <- 1E6  # maximum theta=4Nu
+
+  # prior on time of population size changes
+  prior_T            <- "LU"    # "LU" for log-uniform, "UN" for uniform
+  prior_T_min        <- 1     # maximum time (measured in number of mutations)
+  prior_T_max        <- 5000  # maximum time (measured in number of mutations)
+  
+  
+  # prior on mutational model
+  prior_MUTRATE         <- "LU"   # "LU" for log-uniform, "UN" for uniform, "GA" for gamma
+  prior_MUTRATE_min     <- 0.0011
+  prior_MUTRATE_max     <- 0.0021
+  prior_MUTRATE_mean    <- 0
+  prior_MUTRATE_shape   <- 0
+  prior_MUTRATE_i_min   <- prior_MUTRATE_min
+  prior_MUTRATE_i_max   <- prior_MUTRATE_max
+  prior_MUTRATE_i_mean  <- "Mean_u"
+  prior_MUTRATE_i_shape <- 0 # set shape to 0 if you want all individual loci to take the same value (= mean)
+}
+
+
 
 prior_GSM         <- "UN"   # "LU" for log-uniform, "UN" for uniform, "GA" for gamma
 prior_GSM_min     <- 0 # Set minimum and maximum to 0 if you want a Stepwise Mutation Model
@@ -109,7 +139,7 @@ prior_SNI_i_shape <- 0 # set shape to 0 if you want all individual loci to take 
 directory <- getwd()
 
 # Set project name (affects subdirectory and output files names)
-project   <- "Poisson"
+project   <- "test"
 
 # Set to FALSE to keep all DIYABC output files
 # (most important files, such as the one containing reference table are always kept)
@@ -127,7 +157,7 @@ g_out <- "pdf"
 
 # specify whether target data will be simulated or will be read from files
 simulated_target_data <- F
- # Microsatellite data info
+# Microsatellite data info
 motif <- 1 # a single value if all loci have the same repeat length
            # or a factor with each motif length in the same order as in
            # inputfile

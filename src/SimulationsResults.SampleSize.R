@@ -33,7 +33,7 @@ scen26_loci[,"loci_30"] <- scen26_ind[,"ind_50"] <- bayes_factor[,26]
 for (project in c("ind_6","ind_12","ind_25","ind_100")){
   bayes_factor <- matrix(NA,nrow=number_of_replicates,ncol=length(scenarios_number))
   for (scen in seq_along(scenarios_number)){
-    load(paste0("results/",project,"/Results/",scenarios[scen],"_",pgsm_values[pgsm],"_results.RData"))
+    load(paste0("results/",project,"/Results/",scenarios[scen],"_",pgsm_values,"_results.RData"))
     bayes_factor[,scen] <- (test_constant_model$posterior[,2]/test_constant_model$posterior[,1])[1:number_of_replicates]
     bayes_factor[which(is.infinite(bayes_factor[,scen])),scen] <- NA
   }
@@ -45,7 +45,7 @@ for (project in c("ind_6","ind_12","ind_25","ind_100")){
 for (project in c("loci_7","loci_15","loci_60")){
   bayes_factor <- matrix(NA,nrow=number_of_replicates,ncol=length(scenarios_number))
   for (scen in seq_along(scenarios_number)){
-    load(paste0("results/",project,"/Results/",scenarios[scen],"_",pgsm_values[pgsm],"_results.RData"))
+    load(paste0("results/",project,"/Results/",scenarios[scen],"_",pgsm_values,"_results.RData"))
     bayes_factor[,scen] <- (test_constant_model$posterior[,2]/test_constant_model$posterior[,1])[1:number_of_replicates]
     bayes_factor[which(is.infinite(bayes_factor[,scen])),scen] <- NA
   }
@@ -78,6 +78,11 @@ polygon(xx, yy, col="gray75",border = NA)
 boxplot(scen8_ind, add=T, names=NA, main= "contraction", ylab="Bayes factor", col="white",pch=".")
 axis(1, at=1:5 , labels= c(6,12,25,50,100), las=1, tick=F)
 
+text(x=0.5,y=300,
+     labels="A",cex=2)
+
+
+
 plot.new()
 plot.window(xlim=c(0,6), xaxs="i",
             ylim=c(0.1,1000), yaxs="i", log="y")
@@ -96,6 +101,8 @@ yy <- c(100,10000000,10000000,100)
 polygon(xx, yy, col="gray75",border = NA)
 boxplot(scen20_ind, add=T, names=NA, main= "expansion", xlab="sample size (diploid individuals)", col="white",pch=".")
 axis(1, at=1:5 , labels= c(6,12,25,50,100), las=1, tick=F)
+text(x=0.5,y=300,
+     labels="B",cex=2)
 
 
 plot.new()
@@ -122,6 +129,8 @@ text(6,54.77226,"very strong",cex=0.8)
 text(6,173.2051,"decisive",cex=0.8)
 boxplot(scen26_ind, add=T, names=NA, main="constant", col="white",pch=".")
 axis(1, at=1:5 , labels= c(6,12,25,50,100), las=1, tick=F)
+text(x=0.5,y=300,
+     labels="C",cex=2)
 
 
 
@@ -149,6 +158,8 @@ polygon(xx, yy, col="gray75",border = NA)
 
 boxplot(scen8_loci, add=T, names=NA, ylab="Bayes factor", col="white",pch=".")
 axis(1, at=1:4 , labels= c(7,15,30,60), las=1, tick=F)
+text(x=0.5,y=300,
+     labels="D",cex=2)
 
 plot.new()
 plot.window(xlim=c(0,5), xaxs="i",
@@ -168,6 +179,8 @@ yy <- c(100,10000000,10000000,100)
 polygon(xx, yy, col="gray75",border = NA)
 boxplot(scen20_loci, add=T, names=NA, xlab="number of loci", col="white",pch=".")
 axis(1, at=1:4 , labels= c(7,15,30,60), las=1, tick=F)
+text(x=0.5,y=300,
+     labels="E",cex=2)
 
 
 plot.new()
@@ -194,6 +207,8 @@ text(5,54.77226,"very strong",cex=0.8)
 text(5,173.2051,"decisive",cex=0.8)
 boxplot(scen26_loci, add=T, names=NA, col="white",pch=".")
 axis(1, at=1:4 , labels= c(7,15,30,60), las=1, tick=F)
+text(x=0.5,y=300,
+     labels="F",cex=2)
 
 
 

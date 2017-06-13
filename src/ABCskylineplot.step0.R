@@ -27,7 +27,10 @@ if (!simulated_target_data){
   temp <- read.genepop(paste0("data/",inputfile), ncode=3)
   data_names_of_loci <- levels(temp$loc.fac)
   data_num_of_loci   <- nlevels(temp$loc.fac)
-  data_sample_size   <- as.integer(sum(temp$ploidy))
+  data_sample_size <- numeric()
+  for (p in seq_len(nlevels(temp$pop))){
+    data_sample_size <- c(data_sample_size,as.integer(sum(temp$ploidy[temp$pop==levels(temp$pop)[p]])) )
+  }
   remove(temp)
   
   
@@ -149,13 +152,27 @@ for (period in min_num_of_periods:max_num_of_periods){
   # lines defining demographic priors
   if (period>2){conditions <- 1}else{conditions <- 0}
   write( paste("historical parameters priors (",number_of_parameters,",",conditions,")",sep=""), file=header_file_name, append=T)
-  write( paste("N0 N ",prior_THETA,"[",prior_THETA_min/(4*MUTRATE),",",prior_THETA_max/(4*MUTRATE),",0,0]",sep=""), file=header_file_name, append=T)
+  if (prior_on_theta){
+    write( paste("N0 N ",prior_THETA,"[",prior_THETA_min/(4*MUTRATE),",",prior_THETA_max/(4*MUTRATE),",0,0]",sep=""), file=header_file_name, append=T)
+  }else{
+    write( paste("N0 N ",prior_N,"[",prior_N_min,",",prior_N_max,",0,0]",sep=""), file=header_file_name, append=T)
+  }
   if (period>1){
-    if (period==max_num_of_periods) params_header <- c("PERIODS","THETA0")
+    if (prior_on_theta){
+      if (period==max_num_of_periods) params_header <- c("PERIODS","THETA0")
+    }else{
+      if (period==max_num_of_periods) params_header <- c("PERIODS","n0")
+    }
     for (i in 1:(period-1) ) {
-      write(paste("t",i," T ",prior_TAU,"[",prior_TAU_min/MUTRATE,",",prior_TAU_max/MUTRATE,",0,0]",sep=""), file=header_file_name, append=T)
-      write(paste("N",i," N ",prior_THETA,"[",prior_THETA_min/(4*MUTRATE),",",prior_THETA_max/(4*MUTRATE),",0,0]",sep=""), file=header_file_name, append=T)
-      if (period==max_num_of_periods) params_header <- c(params_header,paste0("TAU",i),paste0("THETA",i))
+      if (prior_on_theta){
+        write(paste("t",i," T ",prior_TAU,"[",prior_TAU_min/MUTRATE,",",prior_TAU_max/MUTRATE,",0,0]",sep=""), file=header_file_name, append=T)
+        write(paste("N",i," N ",prior_THETA,"[",prior_THETA_min/(4*MUTRATE),",",prior_THETA_max/(4*MUTRATE),",0,0]",sep=""), file=header_file_name, append=T)
+        if (period==max_num_of_periods) params_header <- c(params_header,paste0("TAU",i),paste0("THETA",i))
+      }else{
+        write(paste("t",i," T ",prior_T,"[",prior_T_min,",",prior_T_max,",0,0]",sep=""), file=header_file_name, append=T)
+        write(paste("N",i," N ",prior_N,"[",prior_N_min,",",prior_N_max,",0,0]",sep=""), file=header_file_name, append=T)
+        if (period==max_num_of_periods) params_header <- c(params_header,paste0("T",i),paste0("n",i))
+      }
     }
   }
   if (conditions==1){

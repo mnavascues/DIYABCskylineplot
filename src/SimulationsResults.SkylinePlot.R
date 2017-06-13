@@ -5,7 +5,7 @@
 
 pgsm_values <- c(0.00,0.22,0.74)
 options(scipen = 999)
-project <- "ratioNe"
+project <- "Poisson"
 number_of_replicates <- 100
 scenarios_number <- 1:27
 scenarios <- paste("Scenario", scenarios_number, sep="")
@@ -65,9 +65,9 @@ for (scen in c(8,20,26) ){
     mtext(label_y, side=2, adj=0.5, cex=1, outer=TRUE)
   }
 
-  if(scen==8)  legend(x="topright",legend="contraction",cex=1.2,bty="n")
-  if(scen==20) legend(x="topright",legend="expansion",cex=1.2,bty="n")
-  if(scen==26) legend(x="topright",legend="constant size",cex=1.2,bty="n")
+  if(scen==8)  text(x=0.0005,y=2000,labels="A",cex=2)
+  if(scen==20) text(x=0.0005,y=2000,labels="B",cex=2)
+  if(scen==26) text(x=0.0005,y=2000,labels="C",cex=2)
 
 }
 dev.off()

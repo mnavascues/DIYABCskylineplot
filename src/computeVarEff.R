@@ -61,8 +61,8 @@ VarEff(parafile = project,
 
 NTdist(NameBATCH = paste0(project,".Batch"),
        MUTAT=0,
-       TMAX=4)
+       TMAX=40)
 NatSizeDist(NameBATCH = paste0(project,".Batch"),
             MUTAT     = 0,
-            TMAX      = 4,
+            TMAX      = 0.0004,
             NBT       = 20)

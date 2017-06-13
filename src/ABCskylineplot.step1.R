@@ -121,28 +121,36 @@ for (period in min_num_of_periods:max_num_of_periods){
   }
   
   
-  if (!((prior_SNI=="UN" || prior_SNI=="LU") && (prior_SNI_min==prior_SNI_max))){
-    reftable[,"N0"]<-reftable[,"N0"]*4*(MUTRATE+reftable[,"snimic_1"])
-    if (period>1){
-      for (i in 1:(period-1)){
-        reftable[,paste0("t",i)] <- reftable[,paste0("t",i)]*(MUTRATE+reftable[,"snimic_1"])
-        reftable[,paste0("N",i)] <- reftable[,paste0("N",i)]*4*(MUTRATE+reftable[,"snimic_1"])
+  if (prior_on_theta){
+    if (!((prior_SNI=="UN" || prior_SNI=="LU") && (prior_SNI_min==prior_SNI_max))){
+      reftable[,"N0"]<-reftable[,"N0"]*4*(MUTRATE+reftable[,"snimic_1"])
+      if (period>1){
+        for (i in 1:(period-1)){
+          reftable[,paste0("t",i)] <- reftable[,paste0("t",i)]*(MUTRATE+reftable[,"snimic_1"])
+          reftable[,paste0("N",i)] <- reftable[,paste0("N",i)]*4*(MUTRATE+reftable[,"snimic_1"])
+        }
       }
-    }
-  }else{
-    reftable[,"N0"]<-reftable[,"N0"]*4*MUTRATE
-    if (period>1){
-      for (i in 1:(period-1)){
-        reftable[,paste0("t",i)] <- reftable[,paste0("t",i)]*MUTRATE
-        reftable[,paste0("N",i)] <- reftable[,paste0("N",i)]*4*MUTRATE
+    }else{
+      reftable[,"N0"]<-reftable[,"N0"]*4*MUTRATE
+      if (period>1){
+        for (i in 1:(period-1)){
+          reftable[,paste0("t",i)] <- reftable[,paste0("t",i)]*MUTRATE
+          reftable[,paste0("N",i)] <- reftable[,paste0("N",i)]*4*MUTRATE
+        }
       }
-    }
-  }                          
+    }                          
+  }
   
   temp_params<-cbind(period,reftable[,reftable_header[1:number_of_parameters+1]])
   if (period!=max_num_of_periods){
-    for(i in period:(max_num_of_periods-1)){
-      temp_params <- cbind(temp_params,array(prior_TAU_max,sims_in_reftable),temp_params[,period*2])
+    if (prior_on_theta){
+      for(i in period:(max_num_of_periods-1)){
+        temp_params <- cbind(temp_params,array(prior_TAU_max,sims_in_reftable),temp_params[,period*2])
+      }
+    }else{
+      for(i in period:(max_num_of_periods-1)){
+        temp_params <- cbind(temp_params,array(prior_T_max,sims_in_reftable),temp_params[,period*2])
+      }
     }
   }
   colnames(temp_params) <- params_header

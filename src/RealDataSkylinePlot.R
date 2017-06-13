@@ -11,7 +11,7 @@ WhaleSharkMutPrior <- mut_params
 WhaleSharkMutPost  <- abcresult$adj.values
 
 WhaleSharkVarEff   <- read.table(file=paste0("results/VarEff/Requin.skylineplot"))
-#WhaleSharkBEAST    <- read.csv(file=paste0("results/BEAST/RequinR.csv"))
+WhaleSharkBEAST    <- read.csv(file=paste0("results/BEAST/Requin/Requin50.csv"))
 
 load("/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot/results/Leatherback/Leatherback_step3.RData")
 LeatherbackSky <- skylineplot
@@ -21,7 +21,7 @@ LeatherbackMutPrior <- mut_params
 LeatherbackMutPost  <- abcresult$adj.values
 
 LeatherbackVarEff   <- read.table(file=paste0("results/VarEff/Leatherback.skylineplot"))
-#LeatherbackBEAST    <- read.csv(file=paste0("results/BEAST/Leatherback.csv"))
+LeatherbackBEAST    <- read.csv(file=paste0("results/BEAST/Leatherback/Leatherback50.csv"))
 
 
 load("/home/miguel/Work/Research/ABC_Skyline_plot/DIYABCskylineplot/results/BWC_SSMandGSM_results.RData")
@@ -137,14 +137,14 @@ dev.off ( which=dev.cur() )
 
 
 
-
-
+#plot supplementary
+{
 
 pdf(file="results/RealDataSkylinePlotSupp.pdf", width=8, height=8)
 par(cex.axis=1,cex.lab=1.2,mar=c(3,3,2,2), oma=c(3.5,3.5,0,0),mfcol=c(2,2))
 
 limits_on_y <- c(10^(-2.5),10^3.5)
-limits_on_x <- c(0.00025,4)
+limits_on_x <- c(0.00025,40)
 label_x     <- expression(tau~"(time measured in mutations)")
 label_y     <- expression(theta*"="*4*N[e]*mu)
 
@@ -157,13 +157,13 @@ plot(WhaleSharkSky[,1],
      ylim=limits_on_y,
      xlim=limits_on_x,
      cex.axis=0.00001,
-     lty=1,lwd=4)
+     lty=1,lwd=4,tick=F)
 axis(1,
-     at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
-     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+     at     = c(5e-4,5e-3,5e-2,5e-1,5,50) ,
+     labels = c("0.0005","0.005","0.05","0.5","5","50") , las=1, tick=T)
 axis(2,
      at     = c(0.01,1,100) ,
-     labels = c("0.01","1","100") , las=1, tick=F)
+     labels = c("0.01","1","100") , las=1, tick=T)
 lines(WhaleSharkSky[,1],
       WhaleSharkSky[,3],col=cbbPalette[1],type="l",lty=2,lwd=2)
 lines(WhaleSharkSky[,1],
@@ -172,7 +172,10 @@ lines(WhaleSharkSky[,1],
 lines(WhaleSharkVarEff[,1],WhaleSharkVarEff[,5],col=cbbPalette[5],lty=1,lwd=2)
 lines(WhaleSharkVarEff[,1],WhaleSharkVarEff[,6],col=cbbPalette[5],lty=2)
 lines(WhaleSharkVarEff[,1],WhaleSharkVarEff[,7],col=cbbPalette[5],lty=2)
-#lines(WhaleSharkBEAST[-1,1],WhaleSharkBEAST[-1,3],col=cbbPalette[7],lty=1,lwd=2)
+
+lines(WhaleSharkBEAST[-1,1],WhaleSharkBEAST[-1,3],col=cbbPalette[7],lty=1,lwd=2)
+lines(WhaleSharkBEAST[-1,1],WhaleSharkBEAST[-1,4],col=cbbPalette[7],lty=2)
+lines(WhaleSharkBEAST[-1,1],WhaleSharkBEAST[-1,5],col=cbbPalette[7],lty=2)
 
 
 
@@ -181,7 +184,7 @@ thetaA      <- 2.471
 D           <- 0.00902
 tau         <- theta0*D
 growth_rate <- log(thetaA/theta0)/tau
-generations <- c(seq(0.00001,0.00025,0.0001),WhaleSharkSky[,1],5:40)
+generations <- c(seq(0.00001,0.00025,0.0001),WhaleSharkSky[,1],5:50)
 theta_t     <- array(NA,length(generations))
 for (gen in 1:length(generations)){
   if (generations[gen]<=tau){
@@ -220,13 +223,13 @@ plot(LeatherbackSky[,1],
      ylim=limits_on_y,
      xlim=limits_on_x,
      cex.axis=0.00001,
-     lty=1,lwd=4)
+     lty=1,lwd=4,tick=F)
 axis(1,
-     at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
-     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+     at     = c(5e-4,5e-3,5e-2,5e-1,5,50) ,
+     labels = c("0.0005","0.005","0.05","0.5","5","50") , las=1, tick=T)
 axis(2,
      at     = c(0.01,1,100) ,
-     labels = c("0.01","1","100") , las=1, tick=F)
+     labels = c("0.01","1","100") , las=1, tick=T)
 lines(LeatherbackSky[,1],
       LeatherbackSky[,3],col=cbbPalette[1],type="l",lty=2,lwd=2)
 lines(LeatherbackSky[,1],
@@ -236,7 +239,9 @@ lines(LeatherbackVarEff[,1],LeatherbackVarEff[,5],col=cbbPalette[5],lty=1,lwd=2)
 lines(LeatherbackVarEff[,1],LeatherbackVarEff[,6],col=cbbPalette[5],lty=2)
 lines(LeatherbackVarEff[,1],LeatherbackVarEff[,7],col=cbbPalette[5],lty=2)
 
-#lines(LeatherbackBEAST[-1,1],LeatherbackBEAST[-1,3],col=cbbPalette[7],lty=1,lwd=2)
+lines(LeatherbackBEAST[-1,1],LeatherbackBEAST[-1,3],col=cbbPalette[7],lty=1,lwd=2)
+lines(LeatherbackBEAST[-1,1],LeatherbackBEAST[-1,4],col=cbbPalette[7],lty=2)
+lines(LeatherbackBEAST[-1,1],LeatherbackBEAST[-1,5],col=cbbPalette[7],lty=2)
 
 
 theta0 <- 4.903
@@ -244,7 +249,7 @@ thetaA <- 0.0248
 D      <- 1.073
 tau    <- theta0*D
 growth_rate <- log(thetaA/theta0)/tau
-generations <- c(seq(0.00001,0.00025,0.0001),LeatherbackSky[,1],5:40)
+generations <- c(seq(0.00001,0.00025,0.0001),LeatherbackSky[,1],5:50)
 theta_t     <- array(NA,length(generations))
 for (gen in 1:length(generations)){
   if (generations[gen]<=tau){
@@ -273,13 +278,13 @@ plot(BlackNWhiteColobusSky[,1],
      ylim=limits_on_y,
      xlim=limits_on_x,
      cex.axis=0.00001,
-     lty=1,lwd=4)
+     lty=1,lwd=4,tick=F)
 axis(1,
-     at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
-     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+     at     = c(5e-4,5e-3,5e-2,5e-1,5,50) ,
+     labels = c("0.0005","0.005","0.05","0.5","5","50") , las=1, tick=T)
 axis(2,
      at     = c(0.01,1,100) ,
-     labels = c("0.01","1","100") , las=1, tick=F)
+     labels = c("0.01","1","100") , las=1, tick=T)
 lines(BlackNWhiteColobusSky[,1],
       BlackNWhiteColobusSky[,3],col=cbbPalette[1],type="l",lty=2,lwd=2)
 lines(BlackNWhiteColobusSky[,1],
@@ -314,13 +319,13 @@ plot(RedColobusSky[,1],
      ylim=limits_on_y,
      xlim=limits_on_x,
      cex.axis=0.00001,
-     lty=1,lwd=4)
+     lty=1,lwd=4,tick=F)
 axis(1,
-     at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
-     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+     at     = c(5e-4,5e-3,5e-2,5e-1,5,50) ,
+     labels = c("0.0005","0.005","0.05","0.5","5","50") , las=1, tick=T)
 axis(2,
      at     = c(0.01,1,100) ,
-     labels = c("0.01","1","100") , las=1, tick=F)
+     labels = c("0.01","1","100") , las=1, tick=T)
 lines(RedColobusSky[,1],
       RedColobusSky[,3],col=cbbPalette[1],type="l",lty=2,lwd=2)
 lines(RedColobusSky[,1],
@@ -340,7 +345,7 @@ thetaA <- 6.099
 D      <- 0.256
 tau    <- theta0*D
 growth_rate <- log(thetaA/theta0)/tau
-generations <- c(seq(0.00001,0.00025,0.0001),RedColobusSky[,1],5:40)
+generations <- c(seq(0.00001,0.00025,0.0001),RedColobusSky[,1],5:50)
 theta_t     <- array(NA,length(generations))
 for (gen in 1:length(generations)){
   if (generations[gen]<=tau){
@@ -371,7 +376,7 @@ mtext(label_y, side=2, adj=0.5, cex=1.2, outer=TRUE)
 dev.off ( which=dev.cur() )
 
 
-
+}
 
 
 
@@ -405,13 +410,13 @@ plot(WhaleSharkSky[,1],
      ylim=limits_on_y,
      xlim=limits_on_x,
      cex.axis=0.00001,
-     lty=1,lwd=4)
+     lty=1,lwd=4,tick=F)
 axis(1,
      at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
-     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=T)
 axis(2,
      at     = c(0.01,1,100) ,
-     labels = c("0.01","1","100") , las=1, tick=F)
+     labels = c("0.01","1","100") , las=1, tick=T)
 lines(WhaleSharkSky[,1],
       WhaleSharkSky[,3],col=cbbPalette[1],type="l",lty=2,lwd=2)
 lines(WhaleSharkSky[,1],
@@ -437,9 +442,10 @@ lines( generations,
 
 BF <- round(WhaleSharkTest$posterior[2]/WhaleSharkTest$posterior[1],digits = 2)
 legend(x="topright",
-       legend=c("whale shark",
-                paste0("BF=",BF)),
+       legend=c(paste0("BF=",BF),"478 individuals","14 loci"),
        cex=1.2,bty="n")
+text(x=0.0005,y=1000,
+     labels="A",cex=2)
 
 legend(x="bottomleft",
        legend=c("DIYABCskylineplot","Migraine"),
@@ -453,6 +459,41 @@ legend(x="bottomleft",
 box()
 
 
+plot(BlackNWhiteColobusSky[,1],
+     BlackNWhiteColobusSky[,2],
+     type="l",
+     xlab="",
+     ylab="",
+     log="xy",
+     ylim=limits_on_y,
+     xlim=limits_on_x,
+     cex.axis=0.00001,
+     lty=1,lwd=4,tick=F)
+axis(1,
+     at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
+     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=T)
+axis(2,
+     at     = c(0.01,1,100) ,
+     labels = c("0.01","1","100") , las=1, tick=T)
+lines(BlackNWhiteColobusSky[,1],
+      BlackNWhiteColobusSky[,3],col=cbbPalette[1],type="l",lty=2,lwd=2)
+lines(BlackNWhiteColobusSky[,1],
+      BlackNWhiteColobusSky[,4],col=cbbPalette[1],type="l",lty=2,lwd=2)
+
+theta <- 1.399
+abline(h=theta,col=cbbPalette[2],lty=1,lwd=2)
+
+BF <- round(BlackNWhiteColobusTest,digits = 2)
+legend(x="topright",
+       legend=c(paste0("BF=",BF),"22 individuals","14 loci"),
+       cex=1.2,bty="n")
+text(x=0.0005,y=1000,
+     labels="C",cex=2)
+
+
+
+box()
+
 
 plot(LeatherbackSky[,1],
      LeatherbackSky[,2],
@@ -463,13 +504,13 @@ plot(LeatherbackSky[,1],
      ylim=limits_on_y,
      xlim=limits_on_x,
      cex.axis=0.00001,
-     lty=1,lwd=4)
+     lty=1,lwd=4,tick=F)
 axis(1,
      at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
-     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=T)
 axis(2,
      at     = c(0.01,1,100) ,
-     labels = c("0.01","1","100") , las=1, tick=F)
+     labels = c("0.01","1","100") , las=1, tick=T)
 lines(LeatherbackSky[,1],
       LeatherbackSky[,3],col=cbbPalette[1],type="l",lty=2,lwd=2)
 lines(LeatherbackSky[,1],
@@ -495,46 +536,13 @@ lines( generations,
 
 BF <- round(LeatherbackTest$posterior[2]/LeatherbackTest$posterior[1],digits = 2)
 legend(x="topright",
-       legend=c("leatherback turtle",
-                paste0("BF=",BF)),
+       legend=c(paste0("BF=",BF),"215 individuals","10 loci"),
        cex=1.2,bty="n")
+text(x=0.0005,y=1000,
+     labels="B",cex=2)
 
 box()
 
-
-plot(BlackNWhiteColobusSky[,1],
-     BlackNWhiteColobusSky[,2],
-     type="l",
-     xlab="",
-     ylab="",
-     log="xy",
-     ylim=limits_on_y,
-     xlim=limits_on_x,
-     cex.axis=0.00001,
-     lty=1,lwd=4)
-axis(1,
-     at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
-     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
-axis(2,
-     at     = c(0.01,1,100) ,
-     labels = c("0.01","1","100") , las=1, tick=F)
-lines(BlackNWhiteColobusSky[,1],
-      BlackNWhiteColobusSky[,3],col=cbbPalette[1],type="l",lty=2,lwd=2)
-lines(BlackNWhiteColobusSky[,1],
-      BlackNWhiteColobusSky[,4],col=cbbPalette[1],type="l",lty=2,lwd=2)
-
-theta <- 1.399
-abline(h=theta,col=cbbPalette[2],lty=1,lwd=2)
-
-BF <- round(BlackNWhiteColobusTest,digits = 2)
-legend(x="topright",
-       legend=c("black-and-white colobus",
-                paste0("BF=",BF)),
-       cex=1.2,bty="n")
-
-
-
-box()
 
 
 plot(RedColobusSky[,1],
@@ -546,13 +554,13 @@ plot(RedColobusSky[,1],
      ylim=limits_on_y,
      xlim=limits_on_x,
      cex.axis=0.00001,
-     lty=1,lwd=4)
+     lty=1,lwd=4,tick=F)
 axis(1,
      at     = c(5e-4,5e-3,5e-2,5e-1,5) ,
-     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=F)
+     labels = c("0.0005","0.005","0.05","0.5","5") , las=1, tick=T)
 axis(2,
      at     = c(0.01,1,100) ,
-     labels = c("0.01","1","100") , las=1, tick=F)
+     labels = c("0.01","1","100") , las=1, tick=T)
 lines(RedColobusSky[,1],
       RedColobusSky[,3],col=cbbPalette[1],type="l",lty=2,lwd=2)
 lines(RedColobusSky[,1],
@@ -578,9 +586,10 @@ lines( generations,
 
 BF <- round(RedColobusTest,digits = 2)
 legend(x="topright",
-       legend=c("red colobus",
-                paste0("BF=",BF)),
+       legend=c(paste0("BF=",BF),"23 individuals","13 loci"),
        cex=1.2,bty="n")
+text(x=0.0005,y=1000,
+     labels="D",cex=2)
 
 
 box()

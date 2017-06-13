@@ -16,13 +16,26 @@ sims2keep <- seq_len(nrow(stats)) #which(stats$NAL_1_1!=1.0)
 
 
 G <- paste("G",1:num_of_points,sep="")
-Tmax <- prior_TAU_max
-Tmin <- prior_TAU_min
-
-if (prior_TAU=="LU"){
-  generations <- 10^seq(from=log10(Tmin),to=log10(Tmax),length.out=num_of_points)
+if (prior_on_theta){
+  Tmax <- prior_TAU_max
+  Tmin <- prior_TAU_min
 }else{
-  generations <- seq(from=0, to=Tmax, length.out=num_of_points)
+  Tmax <- prior_T_max
+  Tmin <- prior_T_min
+}
+
+if (prior_on_theta){
+  if (prior_TAU=="LU"){
+    generations <- 10^seq(from=log10(Tmin),to=log10(Tmax),length.out=num_of_points)
+  }else{
+    generations <- seq(from=0, to=Tmax, length.out=num_of_points)
+  }
+}else{
+  if (prior_T=="LU"){
+    generations <- 10^seq(from=log10(Tmin),to=log10(Tmax),length.out=num_of_points)
+  }else{
+    generations <- seq(from=0, to=Tmax, length.out=num_of_points)
+  }
 }
 
 newparams_exist <- file.exists(paste0("results/",project,"/",project,"_newparams.RData"))
@@ -32,16 +45,32 @@ if(!newparams_exist){
                       nrow=dim(params)[1],
                       ncol=num_of_points,
                       dimnames = list(1:dim(params)[1],G))
-  for (gen in 1:length(generations)){
-    lower_than_TAU1 <- which( generations[gen] < params[,"TAU1"])
-    newparams[ lower_than_TAU1 , gen ] <- params[ lower_than_TAU1, "THETA0"]
-    if (max_num_of_periods==2){
-      higher_than_TAU <- which( generations[gen] >= params[,"TAU1"])
-      newparams[ higher_than_TAU , gen ] <- params[ higher_than_TAU, "THETA1"] 
-    }else{
-      for (period in min_num_of_periods:(max_num_of_periods-1)){
-        higher_than_TAU <- which( generations[gen] >= params[,paste("TAU",period,sep="")])
-        newparams[ higher_than_TAU , gen ] <- params[ higher_than_TAU, paste("THETA",period,sep="")] 
+  if (prior_on_theta){
+    for (gen in 1:length(generations)){
+      lower_than_TAU1 <- which( generations[gen] < params[,"TAU1"])
+      newparams[ lower_than_TAU1 , gen ] <- params[ lower_than_TAU1, "THETA0"]
+      if (max_num_of_periods==2){
+        higher_than_TAU <- which( generations[gen] >= params[,"TAU1"])
+        newparams[ higher_than_TAU , gen ] <- params[ higher_than_TAU, "THETA1"] 
+      }else{
+        for (period in min_num_of_periods:(max_num_of_periods-1)){
+          higher_than_TAU <- which( generations[gen] >= params[,paste("TAU",period,sep="")])
+          newparams[ higher_than_TAU , gen ] <- params[ higher_than_TAU, paste("THETA",period,sep="")] 
+        }
+      }
+    }
+  }else{
+    for (gen in 1:length(generations)){
+      lower_than_T1 <- which( generations[gen] < params[,"T1"])
+      newparams[ lower_than_T1 , gen ] <- params[ lower_than_T1, "n0"]
+      if (max_num_of_periods==2){
+        higher_than_T <- which( generations[gen] >= params[,"T1"])
+        newparams[ higher_than_T , gen ] <- params[ higher_than_T, "n1"] 
+      }else{
+        for (period in min_num_of_periods:(max_num_of_periods-1)){
+          higher_than_T <- which( generations[gen] >= params[,paste("T",period,sep="")])
+          newparams[ higher_than_T , gen ] <- params[ higher_than_T, paste("n",period,sep="")] 
+        }
       }
     }
   }
@@ -218,8 +247,15 @@ if (simulated_target_data) {
     
   #generations <- seq(from=0, to=Tmax, length.out=num_of_points)
   limits_on_x <- c(0,max(generations))
-  label_x     <- "t (mutations/locus)"
-  label_y     <- expression("log"[10]*theta)
+  if (prior_on_theta){
+    label_x     <- "t (mutations/locus)"
+    label_y     <- expression("log"[10]*theta)
+    limits_on_y <- c(log10(prior_THETA_min),log10(prior_THETA_max))
+  }else{
+    label_x     <- "t (generations)"
+    label_y     <- expression("log"[10]*"N"["e"])
+    limits_on_y <- c(log10(prior_N_min),log10(prior_N_max))
+  }
   
       
       
@@ -235,7 +271,7 @@ if (simulated_target_data) {
           col=c("white", grey(seq(1,0,-0.05))),
           xlab=label_x,
           ylab=label_y,
-          ylim=c(log10(prior_THETA_min),log10(prior_THETA_max)),
+          ylim=limits_on_y,
           xlim=limits_on_x)
     
   prior_median <- array(NA,length(generations))
@@ -277,12 +313,18 @@ if (simulated_target_data) {
  
       
   # get scale for skykline plot
-  #generations <- seq(from=0, to=Tmax, length.out=num_of_points)
-  limits_on_x <- c(0,max(generations))
-  label_x     <- "t (mutations/locus)"
-  label_y     <- expression("log"[10]*theta)
-      
-  limits_on_y <- c( min(log10(c(abcresult[2,],prior_THETA_min))),  max(log10(c(abcresult[6,],prior_THETA_max))) )
+  #limits_on_x <- c(0,max(generations))
+  if (prior_on_theta){
+    #label_x     <- "t (mutations/locus)"
+    #label_y     <- expression("log"[10]*theta)
+    limits_on_y <- c( min(log10(c(abcresult[2,],prior_THETA_min))),  max(log10(c(abcresult[6,],prior_THETA_max))) )
+  }else{
+    #label_x     <- "t (generations)"
+    #label_y     <- expression("log"[10]*"N"["e"])
+    limits_on_y <- c( min(log10(c(abcresult[2,],prior_N_min))),  max(log10(c(abcresult[6,],prior_N_max))) )
+  }
+  
+  
       
       
   # plot skyline
@@ -358,7 +400,11 @@ if (simulated_target_data) {
   print("Model choice done")
 
   if (max_num_of_periods==2){
-    ratioNe <- params[,"THETA1"]/params[,"THETA0"]
+    if (prior_on_theta){
+      ratioNe <- params[,"THETA1"]/params[,"THETA0"]
+    }else{
+      ratioNe <- params[,"n1"]/params[,"n0"]
+    }
     abcresult <- NA
     abcresult <- abc(target  = abc_target,
                      param   = ratioNe[sims2keep],

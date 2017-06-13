@@ -1,7 +1,7 @@
 # BEAST
 library(coda)
 
-project <- "Scenario26"
+project <- "RC"
 
 beastlog <- read.table(paste0("results/BEAST/",project,"/",project,"_sky.log"), header=T, skip=0)
 #names(beastlog)
@@ -13,7 +13,7 @@ dev.off()
 
 #summary(beastlog)
 
-sum(beastlog[,"demographic.populationSizeChanges"]==0)/length(beastlog[,"demographic.populationSizeChanges"])
+sum(beastlog[1000:5401,"demographic.populationSizeChanges"]==0)/length(beastlog[1000:5401,"demographic.populationSizeChanges"])
 
 
 names(beastlog)

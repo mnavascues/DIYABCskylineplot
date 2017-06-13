@@ -6,7 +6,7 @@
 
 The skyline plot analysis is a statistical inference of the effective population size of a single isolated panmictic population and its changes through time. It has typically a graphical output (the "skyline plot") that represents the posterior distrobution of the effective population size (usually summarized as the median and 95%HPD) at different times.
 
-Currently, the code is implemented only to take a sinle population genotypes for one or more microsatellites loci.
+Currently, the code is implemented only to take a single population genotypes for one or more microsatellites loci.
 
 The code is composed by a suite of scripts in R (http://www.r-project.org/). They use the following R packages:
 
@@ -17,19 +17,27 @@ The code is composed by a suite of scripts in R (http://www.r-project.org/). The
 *hexbin*   for hexbin plots of summary statistic PCA
 *batch*    for running R script from command line with arguments
 
-In addition to R it **requires** the command line executable of [DIYABC](http://www1.montpellier.inra.fr/CBGP/diyabc/). It also requires [fastsimcoal](http://cmpg.unibe.ch/software/fastsimcoal/) for analysing pseudo observed data (simulated data for the evaluation of the method, not necessary for the analysis of empirical data). These should be placed in a /bin folder within the project folder (DIYABC executable can be placed elsewhere, but its location must be then specifiec when running DIYABCskylineplot)
+In addition to R it **requires** the command line executable of [DIYABC](http://www1.montpellier.inra.fr/CBGP/diyabc/). Note that this is **not** the GUI executable. It is found in the file "diyabc_core-2.X.X-linWinOsXExe.zip" (described as "diyabc core binaries (without GUI)") in the [DIYABC webpage](http://www1.montpellier.inra.fr/CBGP/diyabc/).
+
+It also requires [fastsimcoal](http://cmpg.unibe.ch/software/fastsimcoal/) for analysing pseudo observed data (simulated data for the evaluation of the method, not necessary for the analysis of empirical data). These should be placed in a /bin folder within the project folder (DIYABC executable can be placed elsewhere, but its location must be then specifiec when running DIYABCskylineplot)
+
+**NOTE THAT CURRENTLY THIS SCRIPT ONLY RUNS ON UNIX OS**
 
 ## USAGE
 
 Analyse a of data in genepopo format within file "data.gen" and storage of results in folder "folderID4results", with all default options. Working directory should containd folders: src (with all R scripts), bin (with DIYABC executable) and data (with .gen data file).
 
-$ R --no-save --args project "folderID4results" inputfile "data.gen" < src/ABCskylineplot.R
+$ R --no-save --args project "folderID4results" inputfile "data.gen" DIYABC_exe_name "bin/diyabc_core-2.X.X-XXXXXX" < src/ABCskylineplot.R
 
 Default options can be changed in the command line. Example: setting prior for theta as uniform between 0.1 and 10:
 
-$ R --no-save --args project "folderID4results" inputfile "data.gen" prior_THETA "UN" prior_THETA_min 0.1 prior_THETA_max 10 < src/ABCskylineplot.R
+$ R --no-save --args project "folderID4results" inputfile "data.gen" DIYABC_exe_name "bin/diyabc_core-2.X.X-XXXXXX" prior_THETA "UN" prior_THETA_min 0.1 prior_THETA_max 10 < src/ABCskylineplot.R
 
-See ABCskylineplot.R for all options and variable names.
+See ABCskylineplot.R for all options and variable names. The most important one is the size of the repeat unit. By default DIYABCskylineplot considers that in the input file alleles are coded as number of repeats (motif = 1). If allele size are coded in base pairs (the most common case) you need to specify the repeat size. Lets say you have three loci (2 di- and one trinucleotide):
 
+$ R --no-save --args project "folderID4results" inputfile "data.gen" DIYABC_exe_name "bin/diyabc_core-2.X.X-XXXXXX" motif "c(2,3,2)" < src/ABCskylineplot.R
 
+Note that the order of the motif sizes must me te same order as the loci in the file. Also, if all of them are of a single type (e.g. dinuceotides) you can specify a single value:
+
+$ R --no-save --args project "BetulaA" inputfile "A.gen" DIYABC_exe_name "bin/diyabc_core-2.X.X-XXXXXX" motif 2 < src/ABCskylineplot.R
 
